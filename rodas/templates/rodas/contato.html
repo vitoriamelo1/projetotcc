@@ -3,78 +3,148 @@
 {% block title %}Contato - Esperança Sobre Rodas{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1 class="mb-4">Entre em Contato</h1>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <h3>Informações de Contato</h3>
-                    <div class="mb-3">
-                        <i class="fas fa-envelope text-primary me-2"></i>
-                        <strong>Email:</strong> contato@esperancasobrerodas.org
-                    </div>
-                    <div class="mb-3">
-                        <i class="fas fa-phone text-primary me-2"></i>
-                        <strong>Telefone:</strong> (11) 9999-9999
-                    </div>
-                    <div class="mb-3">
-                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
-                        <strong>Endereço:</strong><br>
-                        Rua da Esperança, 123<br>
-                        Bairro da Solidariedade<br>
-                        São Paulo - SP, 01234-567
+<div class="py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-8">Entre em Contato</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Informações de Contato</h3>
+                
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="bg-green-100 rounded-lg p-3">
+                                <i class="fas fa-envelope text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-900">Email</p>
+                            <p class="text-gray-600">contato@esperancasobrerodas.org</p>
+                        </div>
                     </div>
                     
-                    <h4 class="mt-4">Horário de Funcionamento</h4>
-                    <p>
-                        <strong>Segunda a Sexta:</strong> 8h às 17h<br>
-                        <strong>Sábado:</strong> 8h às 12h<br>
-                        <strong>Domingo:</strong> Fechado
-                    </p>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="bg-green-100 rounded-lg p-3">
+                                <i class="fas fa-phone text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-900">Telefone</p>
+                            <p class="text-gray-600">(11) 9999-9999</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <div class="bg-green-100 rounded-lg p-3">
+                                <i class="fas fa-map-marker-alt text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-900">Endereço</p>
+                            <p class="text-gray-600">
+                                Rua da Esperança, 123<br>
+                                Bairro da Solidariedade<br>
+                                São Paulo - SP, 01234-567
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="col-md-6">
-                    <h3>Envie uma Mensagem</h3>
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="nome" class="form-label">Nome Completo</label>
-                            <input type="text" class="form-control" id="nome" name="nome" required>
+                <div class="mt-8 bg-gray-50 rounded-lg p-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Horário de Funcionamento</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="font-medium text-gray-900">Segunda a Sexta:</span>
+                            <span class="text-gray-600">8h às 17h</span>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="flex justify-between">
+                            <span class="font-medium text-gray-900">Sábado:</span>
+                            <span class="text-gray-600">8h às 12h</span>
                         </div>
-                        <div class="mb-3">
-                            <label for="telefone" class="form-label">Telefone</label>
-                            <input type="tel" class="form-control" id="telefone" name="telefone">
+                        <div class="flex justify-between">
+                            <span class="font-medium text-gray-900">Domingo:</span>
+                            <span class="text-gray-600">Fechado</span>
                         </div>
-                        <div class="mb-3">
-                            <label for="assunto" class="form-label">Assunto</label>
-                            <select class="form-select" id="assunto" name="assunto" required>
-                                <option value="">Selecione um assunto</option>
-                                <option value="doacao">Doação de Equipamentos</option>
-                                <option value="solicitacao">Solicitação de Equipamentos</option>
-                                <option value="voluntariado">Voluntariado</option>
-                                <option value="informacoes">Informações Gerais</option>
-                                <option value="outros">Outros</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="mensagem" class="form-label">Mensagem</label>
-                            <textarea class="form-control" id="mensagem" name="mensagem" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Enviar Mensagem</button>
-                    </form>
+                    </div>
                 </div>
+            </div>
+            
+            <div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Envie uma Mensagem</h3>
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    <div>
+                        <label for="nome" class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label>
+                        <input 
+                            type="text" 
+                            id="nome" 
+                            name="nome" 
+                            required 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            required 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="telefone" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
+                        <input 
+                            type="tel" 
+                            id="telefone" 
+                            name="telefone" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="assunto" class="block text-sm font-medium text-gray-700 mb-2">Assunto</label>
+                        <select 
+                            id="assunto" 
+                            name="assunto" 
+                            required 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        >
+                            <option value="">Selecione um assunto</option>
+                            <option value="doacao">Doação de Equipamentos</option>
+                            <option value="solicitacao">Solicitação de Equipamentos</option>
+                            <option value="voluntariado">Voluntariado</option>
+                            <option value="informacoes">Informações Gerais</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="mensagem" class="block text-sm font-medium text-gray-700 mb-2">Mensagem</label>
+                        <textarea 
+                            id="mensagem" 
+                            name="mensagem" 
+                            rows="5" 
+                            required 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        ></textarea>
+                    </div>
+                    
+                    <button 
+                        type="submit" 
+                        class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-300"
+                    >
+                        Enviar Mensagem
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
