@@ -1,0 +1,5 @@
+/* Custom styles for Esperança Sobre Rodas */
+@import "tailwindcss";
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
