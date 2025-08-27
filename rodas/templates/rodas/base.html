@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Esperança Sobre Rodas{% endblock %}</title>
+    {% load static %}
+    
+    <!-- TailwindCSS 4 + DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'rodas/css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-base-100">
+    <!-- Navigation -->
+    <div class="navbar bg-primary text-primary-content shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"></path>
+                    </svg>
+                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-base-content">
+                    <li><a href="{% url 'rodas:index' %}">Início</a></li>
+                    <li><a href="{% url 'rodas:sobre' %}">Sobre</a></li>
+                    <li><a href="{% url 'rodas:contato' %}">Contato</a></li>
+                </ul>
+            </div>
+            <a class="btn btn-ghost text-xl font-bold" href="{% url 'rodas:index' %}">
+                <i class="fas fa-wheelchair mr-2"></i>
+                Esperança Sobre Rodas
+            </a>
+        </div>
+        
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="{% url 'rodas:index' %}">Início</a></li>
+                <li><a href="{% url 'rodas:sobre' %}">Sobre</a></li>
+                <li><a href="{% url 'rodas:contato' %}">Contato</a></li>
+            </ul>
+        </div>
+        
+        <div class="navbar-end">
+            {% if user.is_authenticated %}
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost">
+                        <div class="avatar placeholder">
+                            <div class="bg-neutral text-neutral-content rounded-full w-8">
+                                <span class="text-xs">{{ user.first_name|slice:":1" }}{{ user.last_name|slice:":1" }}</span>
+                            </div>
+                        </div>
+                        {{ user.get_full_name|default:user.username }}
+                    </div>
+                    <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-base-content">
+                        <li><a href="#"><i class="fas fa-user mr-2"></i>Perfil</a></li>
+                        <li><a href="#"><i class="fas fa-cog mr-2"></i>Configurações</a></li>
+                        <li><a href="#"><i class="fas fa-sign-out-alt mr-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <a href="#" class="btn btn-ghost mr-2">Entrar</a>
+                <a href="#" class="btn btn-accent">Cadastrar</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="min-h-screen">
+        {% if messages %}
+            <div class="container mx-auto px-4 pt-4">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} mb-4">
+                        <div>
+                            <span>{{ message }}</span>
+                        </div>
+                        <div class="flex-none">
+                            <button class="btn btn-sm btn-ghost" onclick="this.parentElement.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded">
+        <nav class="grid grid-flow-col gap-4">
+            <a href="{% url 'rodas:sobre' %}" class="link link-hover">Sobre</a>
+            <a href="{% url 'rodas:contato' %}" class="link link-hover">Contato</a>
+            <a href="#" class="link link-hover">Política de Privacidade</a>
+            <a href="#" class="link link-hover">Termos de Uso</a>
+        </nav>
+        <nav>
+            <div class="grid grid-flow-col gap-4">
+                <a href="#" class="text-2xl hover:text-primary"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="text-2xl hover:text-primary"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-2xl hover:text-primary"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </nav>
+        <aside>
+            <p class="font-bold">Esperança Sobre Rodas</p>
+            <p>Transformando vidas através da mobilidade e esperança</p>
+            <p>&copy; {% now "Y" %} Todos os direitos reservados.</p>
+        </aside>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="{% static 'rodas/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
