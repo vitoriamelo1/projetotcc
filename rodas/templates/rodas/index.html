@@ -3,6 +3,42 @@
 {% block title %}Início - Esperança Sobre Rodas{% endblock %}
 
 {% block content %}
+<!-- Authentication Status Banner -->
+{% if user.is_authenticated %}
+<div class="bg-green-600 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-user-check text-xl mr-3"></i>
+                <span class="font-medium">Bem-vindo(a), {{ user.get_full_name|default:user.username }}!</span>
+            </div>
+            <a href="{% url 'rodas:dashboard' %}" class="bg-green-700 hover:bg-green-800 text-white px-3 py-1 rounded-md text-sm font-medium transition duration-300">
+                Ir para Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="bg-blue-600 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-info-circle text-xl mr-3"></i>
+                <span class="font-medium">Faça login para acessar recursos exclusivos!</span>
+            </div>
+            <div class="flex space-x-2">
+                <a href="{% url 'rodas:login' %}" class="bg-blue-700 hover:bg-blue-800 text-white px-3 py-1 rounded-md text-sm font-medium transition duration-300">
+                    Entrar
+                </a>
+                <a href="{% url 'rodas:register' %}" class="bg-white text-blue-600 hover:bg-gray-100 px-3 py-1 rounded-md text-sm font-medium transition duration-300">
+                    Registrar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <!-- Hero Section -->
 <div class="bg-green-600 text-white py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -10,12 +46,20 @@
             <div>
                 <h1 class="text-4xl md:text-5xl font-bold mb-6">Esperança Sobre Rodas</h1>
                 <p class="text-xl mb-8">Transformando vidas através da mobilidade, oferecendo esperança e oportunidades para aqueles que mais precisam.</p>
-                <a href="{% url 'rodas:sobre' %}" class="inline-flex items-center px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-gray-100 transition duration-300">
-                    Saiba Mais
-                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </a>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{% url 'rodas:sobre' %}" class="inline-flex items-center px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-gray-100 transition duration-300">
+                        Saiba Mais
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                    {% if not user.is_authenticated %}
+                    <a href="{% url 'rodas:login' %}" class="inline-flex items-center px-6 py-3 border border-white text-white font-semibold rounded-lg hover:bg-white hover:text-green-600 transition duration-300">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Faça Login
+                    </a>
+                    {% endif %}
+                </div>
             </div>
             <div class="text-center">
                 <i class="fas fa-wheelchair text-8xl opacity-75"></i>
@@ -119,6 +163,22 @@
                         <p class="text-sm text-gray-600">Cadeiras Doadas</p>
                     </div>
                 </div>
+                
+                <!-- User-specific content -->
+                {% if user.is_authenticated %}
+                <div class="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-green-900 mb-2">
+                        <i class="fas fa-user-check mr-2"></i>
+                        Área do Usuário
+                    </h4>
+                    <p class="text-sm text-green-700 mb-3">
+                        Como usuário logado, você tem acesso a recursos exclusivos!
+                    </p>
+                    <a href="{% url 'rodas:dashboard' %}" class="text-sm font-medium text-green-600 hover:text-green-500">
+                        Acessar Dashboard →
+                    </a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

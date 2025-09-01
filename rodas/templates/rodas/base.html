@@ -44,7 +44,7 @@
         <div class="hidden w-full md:block md:w-auto" id="navbar-default">
           <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <li>
-              <a href="{% url 'rodas:index' %}" class="block py-2 px-3 text-white bg-green-700 rounded md:bg-transparent md:text-green-700 md:p-0 dark:text-white md:dark:text-green-500" aria-current="page">Início</a>
+              <a href="{% url 'rodas:index' %}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Início</a>
             </li>
             <li>
               <a href="{% url 'rodas:sobre' %}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Sobre</a>
@@ -52,6 +52,26 @@
             <li>
               <a href="{% url 'rodas:contato' %}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contato</a>
             </li>
+            
+            <!-- Authentication Links -->
+            {% if user.is_authenticated %}
+            <li>
+              <a href="{% url 'rodas:dashboard' %}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Dashboard</a>
+            </li>
+            <li>
+              <a href="{% url 'rodas:profile' %}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 md:p-0 dark:text-white md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">{{ user.first_name|default:user.username }}</a>
+            </li>
+            <li>
+              <a href="{% url 'rodas:logout' %}" class="block py-2 px-3 text-red-600 rounded hover:bg-red-100 md:hover:bg-transparent md:border-0 md:hover:text-red-700 md:p-0 dark:text-red-400 md:dark:hover:text-red-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Sair</a>
+            </li>
+            {% else %}
+            <li>
+              <a href="{% url 'rodas:login' %}" class="block py-2 px-3 text-green-600 rounded hover:bg-green-100 md:hover:bg-transparent md:border-0 md:hover:text-green-700 md:p-0 dark:text-green-400 md:dark:hover:text-green-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Entrar</a>
+            </li>
+            <li>
+              <a href="{% url 'rodas:register' %}" class="block py-2 px-3 text-white bg-green-600 rounded hover:bg-green-700 md:border-0 md:p-0 md:px-3 md:py-2 md:rounded-lg dark:bg-green-600 md:dark:bg-green-600 dark:hover:bg-green-700 md:dark:hover:bg-green-700">Registrar</a>
+            </li>
+            {% endif %}
           </ul>
         </div>
       </div>
