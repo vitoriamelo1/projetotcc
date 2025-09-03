@@ -13,6 +13,7 @@ services:
       - .env
     environment:
       - DJANGO_SETTINGS_MODULE=core.settings.development
+      - REDIS_URL=redis://redis:6379/1
       - DB_PORT=5432
       - DB_HOST=db
     develop:
@@ -55,6 +56,8 @@ services:
   redis:
     image: redis:8.2-alpine
     restart: unless-stopped
+    ports:
+      - "6379:6379"
     networks:
       - rodas
 
