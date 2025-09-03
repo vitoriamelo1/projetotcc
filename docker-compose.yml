@@ -1,9 +1,51 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.settings.production
+      - DB_PORT=5432
+      - DB_HOST=db
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .venv/
+        - action: rebuild
+          path: ./uv.lock
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
     image: postgres:17-alpine
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: rodas
-      POSTGRES_PASSWORD: rodas
-      POSTGRES_DB: rodas
+      POSTGRES_USER: ${DB_USER:-rodas}
+      POSTGRES_PASSWORD: ${DB_PASS:-rodas}
+      POSTGRES_DB: ${DB_NAME:-rodas}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-rodas}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
       - "5439:5432"
+
+  redis:
+    image: redis:8.2-alpine
+    restart: unless-stopped
+
+  mail:
+    image: "maildev/maildev"
+    ports:
+      - "1080:1080"
+      - "1025:1025"
