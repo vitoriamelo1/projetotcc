@@ -8,6 +8,9 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:tailwind\"",
     "dev:server": "uv run python manage.py runserver",
     "dev:tailwind": "tailwindcss -i ./static/css/_style.css -o ./static/css/style.css --watch",
+    "static": "python manage.py collectstatic --noinput",
+    "build": "npm run build:css && python manage.py collectstatic --noinput",
+    "build:css": "tailwindcss -i ./static/css/_style.css -o ./static/css/style.css --minify",
     "migrate": "python manage.py migrate",
     "makemigrations": "python manage.py makemigrations",
     "createsuperuser": "python manage.py createsuperuser"
