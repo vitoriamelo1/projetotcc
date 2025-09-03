@@ -32,7 +32,7 @@ services:
       mail:
         condition: service_started
     networks:
-      - default
+      - rodas
 
   db:
     image: postgres:17-alpine
@@ -50,13 +50,13 @@ services:
     ports:
       - "5439:5432"
     networks:
-      - default
+      - rodas
 
   redis:
     image: redis:8.2-alpine
     restart: unless-stopped
     networks:
-      - default
+      - rodas
 
   mail:
     image: "maildev/maildev"
@@ -64,8 +64,8 @@ services:
       - "1080:1080"
       - "1025:1025"
     networks:
-      - default
+      - rodas
 
 networks:
-  default:
+  rodas:
     driver: bridge
