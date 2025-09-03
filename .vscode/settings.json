@@ -1,0 +1,17 @@
+{
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+  },
+  "eslint.format.enable": true,
+  "explorer.compactFolders": false,
+  "files.autoSave": "onFocusChange",
+  "editor.wordWrap": "on",
+  "python.analysis.typeCheckingMode": "basic",
+  "files.eol": "\n",
+}
