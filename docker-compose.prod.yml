@@ -8,18 +8,9 @@ services:
     env_file:
       - .env
     environment:
-      - DJANGO_SETTINGS_MODULE=core.settings.development
+      - DJANGO_SETTINGS_MODULE=core.settings.production
       - DB_PORT=5432
       - DB_HOST=db
-    develop:
-      watch:
-        - action: sync
-          path: .
-          target: /app
-          ignore:
-            - .venv/
-        - action: rebuild
-          path: ./uv.lock
     depends_on:
       db:
         condition: service_healthy
@@ -43,9 +34,3 @@ services:
   redis:
     image: redis:8.2-alpine
     restart: unless-stopped
-
-  mail:
-    image: "maildev/maildev"
-    ports:
-      - "1080:1080"
-      - "1025:1025"
