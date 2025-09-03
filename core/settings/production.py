@@ -2,7 +2,7 @@
 from .base import *
 
 # Security Settings
-DEBUG = True
+DEBUG = False
 # SECURE_SSL_REDIRECT = True
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # SESSION_COOKIE_SECURE = True
