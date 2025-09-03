@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: vitoriamelo1/rodas:latest
-    command: /bin/bash -c "uv run manage.py migrate rodas --noinput"
+    command: /bin/bash -c "uv run manage.py migrate --noinput"
     env_file:
       - .env
     environment:
