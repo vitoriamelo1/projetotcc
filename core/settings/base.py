@@ -33,7 +33,7 @@ ALLOWED_HOSTS = os.environ.get(
     "DJANGO_ALLOWED_HOSTS", "0.0.0.0 localhost 127.0.0.1"
 ).split(" ")
 
-DJANGO_CSRF_TRUSTED_ORIGINS = os.environ.get(
+CSRF_TRUSTED_ORIGINS = os.environ.get(
     "DJANGO_CSRF_TRUSTED_ORIGINS", "http://localhost:8000"
 ).split(" ")
 
