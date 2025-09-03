@@ -6,14 +6,14 @@
   },
   "scripts": {
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:tailwind\"",
-    "dev:server": "uv run python manage.py runserver",
+    "dev:server": "uv run manage.py runserver",
     "dev:tailwind": "tailwindcss -i ./static/css/_style.css -o ./static/css/style.css --watch",
-    "static": "python manage.py collectstatic --noinput",
-    "build": "npm run build:css && python manage.py collectstatic --noinput",
+    "static": "uv run manage.py collectstatic --noinput",
+    "build": "npm run build:css && uv run manage.py collectstatic --noinput",
     "build:css": "tailwindcss -i ./static/css/_style.css -o ./static/css/style.css --minify",
-    "migrate": "python manage.py migrate",
-    "makemigrations": "python manage.py makemigrations",
-    "createsuperuser": "python manage.py createsuperuser"
+    "migrate": "uv run manage.py migrate",
+    "makemigrations": "uv run manage.py makemigrations",
+    "createsuperuser": "uv run manage.py createsuperuser"
   },
   "dependencies": {
     "flowbite": "^3.1.2"
