@@ -1,8 +1,25 @@
 services:
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vitoriamelo1/rodas:latest
+    command: /bin/bash -c "uv run manage.py migrate rodas --noinput"
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.settings.production
+      - DB_PORT=5432
+      - DB_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
+    image: vitoriamelo1/rodas:latest
     ports:
       - "8000:8000"
     env_file:
@@ -14,6 +31,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
+      migrator:
+        condition: service_completed_successfully
 
   db:
     image: postgres:17-alpine
