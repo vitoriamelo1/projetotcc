@@ -1,37 +1,41 @@
 services:
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vitoriamelo1/rodas:latest
+    command: /bin/bash -c "uv run manage.py migrate --noinput"
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.settings.production
+      - DB_PORT=5432
+      - DB_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - rodas
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
     image: vitoriamelo1/rodas:latest
-    stdin_open: true
-    tty: true
-    command: /bin/bash -c "uv run --host; uv run manage.py makemigrations rodas --noinput; uv run manage.py migrate rodas --noinput; uv run manage.py  runserver --host 0.0.0.0 --port 8000"
-    ports:
-      - "8000:8000"
     env_file:
       - .env
     environment:
-      - DJANGO_SETTINGS_MODULE=core.settings.development
+      - DJANGO_SETTINGS_MODULE=core.settings.production
       - REDIS_URL=redis://redis:6379/1
       - DB_PORT=5432
       - DB_HOST=db
-    develop:
-      watch:
-        - action: sync
-          path: .
-          target: /app
-          ignore:
-            - .venv/
-        - action: rebuild
-          path: ./uv.lock
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
-      mail:
-        condition: service_started
+      migrator:
+        condition: service_completed_successfully
     networks:
       - rodas
 
@@ -48,24 +52,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    ports:
-      - "5439:5432"
     networks:
       - rodas
 
   redis:
     image: redis:8.2-alpine
     restart: unless-stopped
-    ports:
-      - "6379:6379"
-    networks:
-      - rodas
-
-  mail:
-    image: "maildev/maildev"
-    ports:
-      - "1080:1080"
-      - "1025:1025"
     networks:
       - rodas
 
