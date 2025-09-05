@@ -10,6 +10,9 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
+from .forms import PacienteRegisterForm
+from .models import Usuario, Paciente
+from django.utils import timezone
 
 # Create your views here.
 
@@ -64,13 +67,13 @@ def login_view(request):
         return redirect('rodas:dashboard')
     
     if request.method == 'POST':
-        username = request.POST.get('username')
+        email = request.POST.get('email')
         password = request.POST.get('password')
         
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, f'Bem-vindo(a), {user.first_name or user.username}!')
+            messages.success(request, f'Bem-vindo(a), {user.nome_completo or user.email}!')
             next_url = request.GET.get('next', 'rodas:dashboard')
             return redirect(next_url)
         else:
@@ -97,15 +100,40 @@ def register_view(request):
     """
     if request.user.is_authenticated:
         return redirect('rodas:dashboard')
-    
+
     if request.method == 'POST':
-        # Implementar lógica de registro aqui
-        messages.info(request, 'Funcionalidade de registro em desenvolvimento.')
-    
+        form = PacienteRegisterForm(request.POST)
+        if form.is_valid():
+            usuario = Usuario.objects.create_user(
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password1'],
+                nome_completo=form.cleaned_data['nome_completo'],
+                cpf=form.cleaned_data['cpf'],
+                tipo_usuario='paciente',
+                ativo=True,
+                telefone='',  # Pode ser adicionado ao formulário se necessário
+            )
+            Paciente.objects.create(
+                usuario=usuario,
+                responsavel_nome=form.cleaned_data['responsavel_nome'],
+                responsavel_cpf=form.cleaned_data['responsavel_cpf'],
+                responsavel_telefone=form.cleaned_data['responsavel_telefone'],
+                necessita_cadeira_rodas=form.cleaned_data['necessita_cadeira_rodas'],
+                imunossuprimido=form.cleaned_data['imunossuprimido'],
+                observacoes_medicas=form.cleaned_data['observacoes_medicas'],
+                aceite_termos=form.cleaned_data['aceite_termos'],
+                data_aceite_termos=timezone.now(),
+            )
+            messages.success(request, 'Conta criada com sucesso! Faça login para continuar.')
+            return redirect('rodas:login')
+    else:
+        form = PacienteRegisterForm()
+
     context = {
         'title': 'Registro - Esperança Sobre Rodas',
+        'form': form,
     }
-    return render(request, 'rodas/auth/register.html', context)
+    return render(request, 'rodas/auth/register_paciente.html', context)
 
 
 def password_reset_view(request):

@@ -1,12 +1,118 @@
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.core.validators import RegexValidator
 from django.utils import timezone
 from decimal import Decimal
 from typing import Any
 
+class UserManager(BaseUserManager):
+    """
+    Gerenciador customizado para o modelo de usuário
+    """
+    use_in_migrations = True
 
-class Usuario(AbstractUser):
+    def _create_user(self, email: str, password: str, **extra_fields: Any) -> 'Usuario':
+        """
+        Cria e salva um usuário com o email e senha fornecidos
+        """
+        if not email:
+            raise ValueError('O email deve ser fornecido')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email: str, password: str = None, **extra_fields: Any) -> 'Usuario':
+        """
+        Cria e salva um usuário regular
+        """
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email: str, password: str, **extra_fields: Any) -> 'Usuario':
+        """
+        Cria e salva um superusuário
+        """
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superusuário deve ter is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superusuário deve ter is_superuser=True.')
+
+        return self._create_user(email, password, **extra_fields)
+
+
+class AbstractUsuario(AbstractBaseUser, PermissionsMixin):
+    """
+    Classe abstrata para o modelo de usuário customizado
+    """
+    email = models.EmailField(
+        unique=True,
+        verbose_name='Email',
+        help_text='Endereço de email único para login'
+    )
+    nome_completo = models.CharField(
+        max_length=150,
+        verbose_name='Nome Completo'
+    )
+    is_staff = models.BooleanField(
+        default=False,
+        verbose_name='Membro da Equipe',
+        help_text='Designa se o usuário pode acessar o site de administração.'
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name='Ativo',
+        help_text='Designa se este usuário deve ser tratado como ativo. Desmarque esta opção ao invés de deletar contas.'
+    )
+    data_criacao = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Data de Criação'
+    )
+    data_atualizacao = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Última Atualização'
+    )
+
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['nome_completo']
+
+    class Meta:
+        abstract = True
+        verbose_name = 'Usuário'
+        verbose_name_plural = 'Usuários'
+
+    def __str__(self) -> str:
+        return self.get_full_name() or self.email
+
+    def get_full_name(self) -> str:
+        """
+        Retorna o nome completo do usuário
+        """
+        return self.nome_completo
+
+    def get_short_name(self) -> str:
+        """
+        Retorna o primeiro nome do usuário
+        """
+        return self.nome_completo.split(' ')[0] if self.nome_completo else self.email.split('@')[0]
+
+    def email_user(self, subject: str, message: str, from_email: str = None, **kwargs: Any) -> None:
+        """
+        Envia um email para este usuário
+        """
+        from django.core.mail import send_mail
+        send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
+class Usuario(AbstractUsuario):
     """
     Modelo de usuário customizado que estende o User padrão do Django
     """
@@ -15,9 +121,9 @@ class Usuario(AbstractUser):
         ('motorista', 'Motorista Voluntário'),
         ('admin', 'Administrador'),
     ]
-    
+
     tipo_usuario = models.CharField(
-        max_length=20, 
+        max_length=20,
         choices=TIPO_CHOICES,
         default='paciente',
         verbose_name='Tipo de Usuário'
@@ -36,7 +142,7 @@ class Usuario(AbstractUser):
         help_text='Formato: 000.000.000-00'
     )
     data_nascimento = models.DateField(
-        null=True, 
+        null=True,
         blank=True,
         verbose_name='Data de Nascimento'
     )
@@ -73,6 +179,10 @@ class Usuario(AbstractUser):
         auto_now=True,
         verbose_name='Última Atualização'
     )
+
+    username = None
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     def __str__(self) -> str:
         nome = self.get_full_name() or self.username
@@ -268,7 +378,7 @@ class Corrida(models.Model):
         related_name='corridas',
         verbose_name='Motorista'
     )
-    
+
     # Endereços
     endereco_origem = models.TextField(
         verbose_name='Endereço de Origem'
@@ -287,7 +397,7 @@ class Corrida(models.Model):
         blank=True,
         verbose_name='Longitude Origem'
     )
-    
+
     endereco_destino = models.TextField(
         verbose_name='Endereço de Destino'
     )
@@ -305,7 +415,7 @@ class Corrida(models.Model):
         blank=True,
         verbose_name='Longitude Destino'
     )
-    
+
     # Data e hora
     data_hora_agendada = models.DateTimeField(
         verbose_name='Data e Hora Agendada'
@@ -330,7 +440,7 @@ class Corrida(models.Model):
         blank=True,
         verbose_name='Data e Hora da Finalização'
     )
-    
+
     # Detalhes da corrida
     numero_passageiros = models.IntegerField(
         default=1,
@@ -348,7 +458,7 @@ class Corrida(models.Model):
         blank=True,
         verbose_name='Observações'
     )
-    
+
     # Status e controle
     status = models.CharField(
         max_length=20,
@@ -356,7 +466,7 @@ class Corrida(models.Model):
         default='pendente',
         verbose_name='Status'
     )
-    
+
     # Dados de criação e atualização
     data_criacao = models.DateTimeField(
         auto_now_add=True,
@@ -366,7 +476,7 @@ class Corrida(models.Model):
         auto_now=True,
         verbose_name='Última Atualização'
     )
-    
+
     # Motivo de cancelamento
     motivo_cancelamento = models.TextField(
         blank=True,

@@ -1,0 +1,241 @@
+{% extends 'rodas/base.html' %}
+
+{% block title %}Registro - Esperança Sobre Rodas{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-green-100">
+                <i class="fas fa-user-plus text-2xl text-green-600"></i>
+            </div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Criar nova conta
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Ou
+                <a href="{% url 'rodas:login' %}" class="font-medium text-green-600 hover:text-green-500">
+                    faça login em sua conta existente
+                </a>
+            </p>
+        </div>
+
+        <form class="mt-8 space-y-6" method="post">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <fieldset class="space-y-4">
+                <legend class="text-lg font-medium text-gray-900">Dados do Paciente</legend>
+                <div>
+                    <label for="nome_completo" class="block text-sm font-medium text-gray-700">Nome Completo</label>
+                    {% if form.nome_completo.errors %}
+                        <div class="text-red-600 text-xs mb-1">{{ form.nome_completo.errors.0 }}</div>
+                    {% endif %}
+                    <input
+                            id="nome_completo"
+                            name="nome_completo"
+                            type="text"
+                            required
+                            value="{{ form.nome_completo.value|default:'' }}"
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
+                            placeholder="Seu nome"
+                    >
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    {% if form.email.errors %}
+                        <div class="text-red-600 text-xs mb-1">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                    <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            required
+                            value="{{ form.email.value|default:'' }}"
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
+                            placeholder="seu@email.com"
+                    >
+                </div>
+
+                <div>
+                    <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
+                    {% if form.cpf.errors %}
+                        <div class="text-red-600 text-xs mb-1">{{ form.cpf.errors.0 }}</div>
+                    {% endif %}
+                    <input
+                            id="cpf"
+                            name="cpf"
+                            type="text"
+                            required
+                            value="{{ form.cpf.value|default:'' }}"
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
+                            placeholder="000.000.000-00"
+                    >
+                </div>
+
+                <div>
+                    <label for="password1" class="block text-sm font-medium text-gray-700">Senha</label>
+                    {% if form.password1.errors %}
+                        <div class="text-red-600 text-xs mb-1">{{ form.password1.errors.0 }}</div>
+                    {% endif %}
+                    <input
+                            id="password1"
+                            name="password1"
+                            type="password"
+                            required
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
+                            placeholder="Senha"
+                    >
+                </div>
+
+                <div>
+                    <label for="password2" class="block text-sm font-medium text-gray-700">Confirmar Senha</label>
+                    {% if form.password2.errors %}
+                        <div class="text-red-600 text-xs mb-1">{{ form.password2.errors.0 }}</div>
+                    {% endif %}
+                    <input
+                            id="password2"
+                            name="password2"
+                            type="password"
+                            required
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
+                            placeholder="Confirme sua senha"
+                    >
+                </div>
+            </fieldset>
+
+            <fieldset class="space-y-4">
+                <legend class="text-lg font-medium text-gray-900">Dados do Responsável</legend>
+                <div>
+                    <label for="responsavel_nome" class="block text-sm font-medium text-gray-700">Nome do Responsável</label>
+                    {% if form.responsavel_nome.errors %}
+                        <div class="text-red-600 text-xs mb-1">{{ form.responsavel_nome.errors.0 }}</div>
+                    {% endif %}
+                    <input
+                            id="responsavel_nome"
+                            name="responsavel_nome"
+                            type="text"
+                            required
+                            value="{{ form.responsavel_nome.value|default:'' }}"
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
+                            placeholder="Nome do responsável"
+                    >
+                </div>
+
+                <div>
+                    <label for="responsavel_email" class="block text-sm font-medium text-gray-700">Email do Responsável</label>
+                    {% if form.responsavel_email.errors %}
+                        <div class="text-red-600 text-xs mb-1">{{ form.responsavel_email.errors.0 }}</div>
+                    {% endif %}
+                    <input
+                            id="responsavel_email"
+                            name="responsavel_email"
+                            type="email"
+                            required
+                            value="{{ form.responsavel_email.value|default:'' }}"
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
+                            placeholder="email@responsavel.com"
+                    >
+                </div>
+
+                <div>
+                    <label for="responsavel_telefone" class="block text-sm font-medium text-gray-700">Telefone do Responsável</label>
+                    {% if form.responsavel_telefone.errors %}
+                        <div class="text-red-600 text-xs mb-1">{{ form.responsavel_telefone.errors.0 }}</div>
+                    {% endif %}
+                    <input
+                            id="responsavel_telefone"
+                            name="responsavel_telefone"
+                            type="text"
+                            required
+                            value="{{ form.responsavel_telefone.value|default:'' }}"
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
+                            placeholder="(11) 99999-9999"
+                    >
+                </div>
+
+                <div>
+                    <label for="responsavel_cpf" class="block text-sm font-medium text-gray-700">CPF do Responsável</label>
+                    {% if form.responsavel_cpf.errors %}
+                        <div class="text-red-600 text-xs mb-1">{{ form.responsavel_cpf.errors.0 }}</div>
+                    {% endif %}
+                    <input
+                            id="responsavel_cpf"
+                            name="responsavel_cpf"
+                            type="text"
+                            required
+                            value="{{ form.responsavel_cpf.value|default:'' }}"
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
+                            placeholder="000.000.000-00"
+                    >
+                </div>
+            </fieldset>
+
+            <fieldset class="space-y-4">
+                <legend class="text-lg font-medium text-gray-900">Informações Médicas</legend>
+                <div class="flex items-center justify-between space-x-4 mt-1">
+                    <div class="flex items-center">
+                        <input id="necessita_cadeira_rodas" name="necessita_cadeira_rodas" type="checkbox" value="true"
+                               {% if form.necessita_cadeira_rodas.value %}checked{% endif %}
+                               class="appearance-none relative block size-4 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100">
+                        <label for="necessita_cadeira_rodas" class="ms-2 block text-sm font-medium text-gray-700">Cadeira de Rodas</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="imunossuprimido" name="imunossuprimido" type="checkbox" value="true"
+                               {% if form.imunossuprimido.value %}checked{% endif %}
+                               class="appearance-none relative block size-4 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100">
+                        <label for="imunossuprimido" class="ms-2 block text-sm font-medium text-gray-700">Imunossupressão</label>
+                    </div>
+                </div>
+                <div>
+                    <label for="observacoes_medicas" class="block text-sm font-medium text-gray-700">Observações</label>
+                    {% if form.observacoes_medicas.errors %}
+                        <div class="text-red-600 text-xs mb-1">{{ form.observacoes_medicas.errors.0 }}</div>
+                    {% endif %}
+                    <textarea
+                            id="observacoes_medicas"
+                            name="observacoes_medicas"
+                            rows="3"
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
+                            placeholder="Digite as observações médicas">{{ form.observacoes_medicas.value|default:'' }}</textarea>
+                </div>
+            </fieldset>
+
+            <div class="flex items-center">
+                <input id="aceite_termos" name="aceite_termos" type="checkbox" value="true" required
+                       {% if form.aceite_termos.value %}checked{% endif %}
+                       class="appearance-none relative block size-4 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100">
+                <label for="aceite_termos" class="ms-2 block text-sm font-medium text-gray-700">Aceito os <a
+                        href="/download/termos_condicoes_paciente.pdf" class="text-blue-500 dark:text-blue-400">termos e condições</a></label>
+                {% if form.aceite_termos.errors %}
+                    <div class="text-red-600 text-xs ml-2">{{ form.aceite_termos.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div>
+                <button
+                        type="submit"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-400 disabled:cursor-not-allowed"
+                >
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <i class="fas fa-user-plus text-gray-300"></i>
+                    </span>
+                    Criar Conta
+                </button>
+            </div>
+
+            <div class="text-center">
+                <a href="{% url 'rodas:contato' %}" class="text-sm font-medium text-green-600 hover:text-green-500">
+                    Entre em contato para criar uma conta
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

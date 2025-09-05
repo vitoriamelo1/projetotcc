@@ -48,7 +48,7 @@
                                     Nome de usuário
                                 </dt>
                                 <dd class="text-lg font-medium text-gray-900">
-                                    {{ user.username }}
+                                    {{ user.nome_completo|default:"Não informado" }}
                                 </dd>
                             </dl>
                         </div>
@@ -88,7 +88,7 @@
                                     Membro desde
                                 </dt>
                                 <dd class="text-lg font-medium text-gray-900">
-                                    {{ user.date_joined|date:"d/m/Y" }}
+                                    {{ user.data_criacao|date:"d/m/Y" }}
                                 </dd>
                             </dl>
                         </div>

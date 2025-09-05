@@ -1,5 +1,7 @@
 services:
   app:
+    profiles:
+      - app
     build:
       context: .
       dockerfile: Dockerfile
