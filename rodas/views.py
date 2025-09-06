@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from .forms import PacienteRegisterForm, SolicitaCorridaform
-from .models import Usuario, Paciente, TipoUsuario, Corrida, CorridaStatus
+from .models import Usuario, Paciente, TipoUsuario, Corrida, CorridaStatus, Motorista
 
 
 # Create your views here.
@@ -174,26 +174,27 @@ def dashboard_view(request):
     """
     View do dashboard - exemplo de área restrita.
     """
-
     usuario: Usuario = request.user
-    paciente = Paciente.objects.get(usuario=usuario)
-
-    corridas = (
-        Corrida.objects.filter(paciente=paciente).order_by("-data_hora_agendada")
-        if paciente
-        else []
-    )
-
-    context = {
-        "title": "Dashboard - Esperança Sobre Rodas",
-        "user": usuario,
-        "corridas": corridas,
-    }
 
     if usuario.tipo_usuario == TipoUsuario.PACIENTE:
-        return render(request, "rodas/paciente/dashboard.html", context)
+        paciente = Paciente.objects.get(usuario=usuario)
 
-    return render(request, "rodas/motorista/dashboard.html", context)
+        corridas = (
+            Corrida.objects.filter(paciente=paciente).order_by("-data_hora_agendada")
+            if paciente
+            else []
+        )
+
+        return render(request, "rodas/paciente/dashboard.html", {
+            "title": "Dashboard - Esperança Sobre Rodas",
+            "user": usuario,
+            "corridas": corridas,
+        })
+
+    return render(request, "rodas/motorista/dashboard.html", {
+        "title": "Dashboard - Esperança Sobre Rodas",
+        "user": usuario,
+    })
 
 
 @login_required
