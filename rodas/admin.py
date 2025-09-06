@@ -4,27 +4,28 @@ from .models import Usuario, Paciente, Motorista, Corrida, Avaliacao, Notificaca
 
 
 @admin.register(Usuario)
-class UsuarioAdmin(UserAdmin):
+class UsuarioAdmin(admin.ModelAdmin):
     """
     Admin para o modelo Usuario customizado
     """
-    list_display = ('get_full_name', 'email', 'tipo_usuario', 'ativo', 'data_criacao')
-    list_filter = ('tipo_usuario', 'ativo', 'is_staff', 'is_superuser', 'data_criacao')
-    search_fields = ('nome_completo', 'email', 'cpf', 'tipo')
-    ordering = ('-data_criacao',)
-
-    fieldsets = UserAdmin.fieldsets + (
-        ('Informações Adicionais', {
-            'fields': ('tipo_usuario', 'telefone', 'cpf', 'data_nascimento',
-                       'endereco_completo', 'cidade', 'estado', 'cep', 'ativo')
-        }),
-    )
-
-    add_fieldsets = UserAdmin.add_fieldsets + (
-        ('Informações Adicionais', {
-            'fields': ('tipo_usuario', 'telefone', 'cpf', 'data_nascimento')
-        }),
-    )
+    # list_display = ('get_full_name', 'email', 'tipo_usuario', 'ativo', 'data_criacao')
+    # list_filter = ('tipo_usuario', 'ativo', 'is_staff', 'is_superuser', 'data_criacao')
+    # search_fields = ('nome_completo', 'email', 'cpf', 'tipo')
+    # ordering = ('-data_criacao',)
+    #
+    # fieldsets = UserAdmin.fieldsets + (
+    #     ('Informações Adicionais', {
+    #         'fields': ('tipo_usuario', 'telefone', 'cpf', 'data_nascimento',
+    #                    'endereco_completo', 'cidade', 'estado', 'cep', 'ativo')
+    #     }),
+    # )
+    #
+    # add_fieldsets = UserAdmin.add_fieldsets + (
+    #     ('Informações Adicionais', {
+    #         'fields': ('tipo_usuario', 'telefone', 'cpf', 'data_nascimento')
+    #     }),
+    # )
+    pass
 
 
 @admin.register(Paciente)
