@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
 from .models import Usuario, Paciente
 
+
 class PacienteRegisterForm(forms.Form):
     nome_completo = forms.CharField(max_length=150, label='Nome Completo')
     email = forms.EmailField(label='Email')
@@ -46,3 +47,9 @@ class PacienteRegisterForm(forms.Form):
                 self.add_error('password1', e)
         return cleaned_data
 
+
+class SolicitaCorridaform(forms.Form):
+    endereco_origem = forms.CharField(max_length=255, label='Endereço de Origem')
+    endereco_destino = forms.CharField(max_length=255, label='Endereço de Destino')
+    data_agendamento = forms.DateField(label="Data")
+    hora_agendamento = forms.TimeField(label="Hora")

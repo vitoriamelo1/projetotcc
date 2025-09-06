@@ -2,9 +2,8 @@
 
 {% block title %}Registro - Esperança Sobre Rodas{% endblock %}
 
-{% block content %}
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
+{% block container_content %}
+    <div class="min-h-screen space-y-8 max-w-md mx-auto">
         <div>
             <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-green-100">
                 <i class="fas fa-user-plus text-2xl text-green-600"></i>
@@ -113,7 +112,8 @@
             <fieldset class="space-y-4">
                 <legend class="text-lg font-medium text-gray-900">Dados do Responsável</legend>
                 <div>
-                    <label for="responsavel_nome" class="block text-sm font-medium text-gray-700">Nome do Responsável</label>
+                    <label for="responsavel_nome" class="block text-sm font-medium text-gray-700">Nome do
+                        Responsável</label>
                     {% if form.responsavel_nome.errors %}
                         <div class="text-red-600 text-xs mb-1">{{ form.responsavel_nome.errors.0 }}</div>
                     {% endif %}
@@ -129,7 +129,8 @@
                 </div>
 
                 <div>
-                    <label for="responsavel_email" class="block text-sm font-medium text-gray-700">Email do Responsável</label>
+                    <label for="responsavel_email" class="block text-sm font-medium text-gray-700">Email do
+                        Responsável</label>
                     {% if form.responsavel_email.errors %}
                         <div class="text-red-600 text-xs mb-1">{{ form.responsavel_email.errors.0 }}</div>
                     {% endif %}
@@ -145,7 +146,8 @@
                 </div>
 
                 <div>
-                    <label for="responsavel_telefone" class="block text-sm font-medium text-gray-700">Telefone do Responsável</label>
+                    <label for="responsavel_telefone" class="block text-sm font-medium text-gray-700">Telefone do
+                        Responsável</label>
                     {% if form.responsavel_telefone.errors %}
                         <div class="text-red-600 text-xs mb-1">{{ form.responsavel_telefone.errors.0 }}</div>
                     {% endif %}
@@ -161,7 +163,8 @@
                 </div>
 
                 <div>
-                    <label for="responsavel_cpf" class="block text-sm font-medium text-gray-700">CPF do Responsável</label>
+                    <label for="responsavel_cpf" class="block text-sm font-medium text-gray-700">CPF do
+                        Responsável</label>
                     {% if form.responsavel_cpf.errors %}
                         <div class="text-red-600 text-xs mb-1">{{ form.responsavel_cpf.errors.0 }}</div>
                     {% endif %}
@@ -184,7 +187,8 @@
                         <input id="necessita_cadeira_rodas" name="necessita_cadeira_rodas" type="checkbox" value="true"
                                {% if form.necessita_cadeira_rodas.value %}checked{% endif %}
                                class="appearance-none relative block size-4 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100">
-                        <label for="necessita_cadeira_rodas" class="ms-2 block text-sm font-medium text-gray-700">Cadeira de Rodas</label>
+                        <label for="necessita_cadeira_rodas" class="ms-2 block text-sm font-medium text-gray-700">Cadeira
+                            de Rodas</label>
                     </div>
                     <div class="flex items-center">
                         <input id="imunossuprimido" name="imunossuprimido" type="checkbox" value="true"
@@ -212,7 +216,8 @@
                        {% if form.aceite_termos.value %}checked{% endif %}
                        class="appearance-none relative block size-4 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100">
                 <label for="aceite_termos" class="ms-2 block text-sm font-medium text-gray-700">Aceito os <a
-                        href="/download/termos_condicoes_paciente.pdf" class="text-blue-500 dark:text-blue-400">termos e condições</a></label>
+                        href="/download/termos_condicoes_paciente.pdf" class="text-blue-500 dark:text-blue-400">termos e
+                    condições</a></label>
                 {% if form.aceite_termos.errors %}
                     <div class="text-red-600 text-xs ml-2">{{ form.aceite_termos.errors.0 }}</div>
                 {% endif %}
@@ -221,21 +226,16 @@
             <div>
                 <button
                         type="submit"
-                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gray-400 disabled:cursor-not-allowed"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 disabled:cursor-not-allowed"
                 >
                     <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                        <i class="fas fa-user-plus text-gray-300"></i>
+                        <i class="fas fa-user-plus"></i>
                     </span>
                     Criar Conta
                 </button>
             </div>
 
-            <div class="text-center">
-                <a href="{% url 'rodas:contato' %}" class="text-sm font-medium text-green-600 hover:text-green-500">
-                    Entre em contato para criar uma conta
-                </a>
-            </div>
         </form>
     </div>
-</div>
+
 {% endblock %}

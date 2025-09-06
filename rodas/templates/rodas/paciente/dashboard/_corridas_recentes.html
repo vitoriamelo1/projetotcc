@@ -1,0 +1,19 @@
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Suas corridas e agendamentos</h1>
+    <ul>
+        {% for corrida in corridas %}
+            <li>
+                <div>
+                    <p>
+                        <strong>
+                            {{ corrida.endereco_destino }}
+                        </strong>
+                    </p>
+                    <p>{{ corrida.data_hora_agendada|date:"d M • H:i" }}</p>
+                    <p>{{ corrida.status }}</p>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+</div>

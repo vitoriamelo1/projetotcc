@@ -6,6 +6,7 @@ from django.utils import timezone
 from decimal import Decimal
 from typing import Any
 
+
 class UserManager(BaseUserManager):
     """
     Gerenciador customizado para o modelo de usuário
@@ -112,19 +113,19 @@ class AbstractUsuario(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
+class TipoUsuario(models.TextChoices):
+    PACIENTE = 'paciente', 'Paciente'
+    MOTORISTA = 'motorista', 'Motorista Voluntário'
+    ADMIN = 'admin', 'Administrador'
+
+
 class Usuario(AbstractUsuario):
     """
     Modelo de usuário customizado que estende o User padrão do Django
     """
-    TIPO_CHOICES = [
-        ('paciente', 'Paciente'),
-        ('motorista', 'Motorista Voluntário'),
-        ('admin', 'Administrador'),
-    ]
-
     tipo_usuario = models.CharField(
         max_length=20,
-        choices=TIPO_CHOICES,
+        choices=TipoUsuario.choices,
         default='paciente',
         verbose_name='Tipo de Usuário'
     )
@@ -186,7 +187,7 @@ class Usuario(AbstractUsuario):
 
     def __str__(self) -> str:
         nome = self.get_full_name() or self.username
-        for valor, display in self.TIPO_CHOICES:
+        for valor, display in TipoUsuario.choices:
             if valor == self.tipo_usuario:
                 return f"{nome} ({display})"
         return nome
@@ -351,18 +352,19 @@ class Motorista(models.Model):
         return f"{self.marca_veiculo} {self.modelo_veiculo} {self.cor_veiculo}"
 
 
+class CorridaStatus(models.TextChoices):
+    PENDENTE = 'pendente', 'Pendente'
+    ACEITA = 'aceita', 'Aceita'
+    EM_ANDAMENTO = 'em_andamento', 'Em Andamento'
+    MOTORISTA_CHEGOU = 'motorista_chegou', 'Motorista Chegou'
+    CONCLUIDA = 'concluida', 'Concluída'
+    CANCELADA = 'cancelada', 'Cancelada'
+
+
 class Corrida(models.Model):
     """
     Modelo principal para as corridas/viagens
     """
-    STATUS_CHOICES = [
-        ('pendente', 'Pendente'),
-        ('aceita', 'Aceita'),
-        ('em_andamento', 'Em Andamento'),
-        ('motorista_chegou', 'Motorista Chegou'),
-        ('concluida', 'Concluída'),
-        ('cancelada', 'Cancelada'),
-    ]
 
     paciente = models.ForeignKey(
         Paciente,
@@ -462,8 +464,8 @@ class Corrida(models.Model):
     # Status e controle
     status = models.CharField(
         max_length=20,
-        choices=STATUS_CHOICES,
-        default='pendente',
+        choices=CorridaStatus.choices,
+        default=CorridaStatus.PENDENTE,
         verbose_name='Status'
     )
 
@@ -480,6 +482,7 @@ class Corrida(models.Model):
     # Motivo de cancelamento
     motivo_cancelamento = models.TextField(
         blank=True,
+        null=True,
         verbose_name='Motivo do Cancelamento'
     )
     data_cancelamento = models.DateTimeField(
@@ -503,26 +506,26 @@ class Corrida(models.Model):
 
     def __str__(self) -> str:
         paciente_nome = self.paciente.usuario.get_full_name() or self.paciente.usuario.username
-        for valor, display in self.STATUS_CHOICES:
+        for valor, display in CorridaStatus.choices:
             if valor == self.status:
                 return f"Corrida #{self.pk} - {paciente_nome} - {display}"
         return f"Corrida #{self.pk} - {paciente_nome}"
 
     @property
     def pode_ser_aceita(self) -> bool:
-        return self.status == 'pendente' and self.motorista is None
+        return self.status == CorridaStatus.PENDENTE and self.motorista is None
 
     @property
     def pode_ser_iniciada(self) -> bool:
-        return self.status == 'aceita' and self.motorista is not None
+        return self.status == CorridaStatus.ACEITA and self.motorista is not None
 
     @property
     def pode_marcar_chegada(self) -> bool:
-        return self.status == 'em_andamento'
+        return self.status == CorridaStatus.EM_ANDAMENTO
 
     @property
     def pode_ser_finalizada(self) -> bool:
-        return self.status == 'motorista_chegou'
+        return self.status == CorridaStatus.MOTORISTA_CHEGOU
 
 
 class Avaliacao(models.Model):

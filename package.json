@@ -5,9 +5,9 @@
     "tailwindcss": "^4.1.12"
   },
   "scripts": {
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:tailwind\"",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:css\"",
     "dev:server": "uv run manage.py runserver",
-    "dev:tailwind": "tailwindcss -i ./static/css/_style.css -o ./static/css/style.css --watch",
+    "dev:css": "tailwindcss -i ./static/css/_style.css -o ./static/css/style.css --watch",
     "static": "uv run manage.py collectstatic --noinput",
     "build": "npm run build:css && uv run manage.py collectstatic --noinput",
     "build:css": "tailwindcss -i ./static/css/_style.css -o ./static/css/style.css --minify",

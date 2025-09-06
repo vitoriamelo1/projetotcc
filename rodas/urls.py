@@ -39,4 +39,5 @@ urlpatterns = [
     # Áreas restritas
     path("dashboard/", views.dashboard_view, name="dashboard"),
     path("profile/", views.profile_view, name="profile"),
+    path("solicita-corrida/", views.solicitar_corrida_view, name="solicita_corrida"),
 ]

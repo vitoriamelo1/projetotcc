@@ -8,6 +8,7 @@ wheels/
 node_modules
 staticfiles
 static/css/style.css
+.idea
 
 # Virtual environments
 .venv
