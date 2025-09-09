@@ -60,7 +60,7 @@ cp .env.example .env
 Certifique-se de que o Docker e o Docker Compose estão instalados. Para subir os serviços (banco de dados, Redis, etc):
 
 ```bash
-docker compose up
+docker compose up app
 ```
 
 Para rodar em modo de produção, utilize:
