@@ -26,7 +26,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
                 <h1 class="text-4xl md:text-5xl font-bold mb-6">Esperança Sobre Rodas</h1>
-                <p class="text-xl mb-8">Transformando vidas através da mobilidade, oferecendo esperança e oportunidades para aqueles que mais precisam.</p>
+                <p class="text-xl mb-8">Conectando motoristas voluntários a crianças e adolescentes em tratamento oncológico, garantindo transporte gratuito, seguro e regular para suas sessões de tratamento.</p>
                 <div class="flex flex-col sm:flex-row gap-4">
                     <a href="{% url 'rodas:sobre' %}" class="inline-flex items-center px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-gray-100 transition duration-300">
                         Saiba Mais
@@ -43,7 +43,8 @@
                 </div>
             </div>
             <div class="text-center">
-                <i class="fas fa-wheelchair text-8xl opacity-75"></i>
+                <i class="fas fa-car text-6xl opacity-75 mb-4"></i>
+                <i class="fas fa-heart text-4xl opacity-60"></i>
             </div>
         </div>
     </div>
@@ -55,10 +56,56 @@
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl font-bold text-gray-900 mb-6">Nossa Missão</h2>
             <p class="text-xl text-gray-600">
-                O projeto Esperança Sobre Rodas tem como objetivo principal promover a inclusão social 
-                e melhorar a qualidade de vida de pessoas com deficiência através do fornecimento de 
-                cadeiras de rodas e equipamentos de mobilidade.
+                O projeto Esperança Sobre Rodas tem como objetivo facilitar o transporte gratuito e seguro 
+                para crianças e adolescentes em tratamento oncológico, especialmente aqueles em condição de 
+                vulnerabilidade social. Nossa plataforma digital conecta motoristas voluntários a pacientes 
+                pediátricos, reduzindo os índices de abandono terapêutico e promovendo a mobilização social.
             </p>
+        </div>
+    </div>
+</div>
+
+<!-- Problem Context Section -->
+<div class="py-16 bg-red-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">O Problema</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                <div>
+                    <h3 class="text-xl font-semibold text-red-700 mb-4">Realidade Preocupante</h3>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-3"></i>
+                            <span>O câncer é a 2ª principal causa de morte entre crianças e adolescentes no Brasil</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-chart-line text-red-500 mt-1 mr-3"></i>
+                            <span>7.930 novos casos anuais previstos no triênio 2023–2025</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-ban text-red-500 mt-1 mr-3"></i>
+                            <span>Abandono do tratamento é um dos principais fatores de insucesso</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-red-700 mb-4">Barreiras de Acesso</h3>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-bus text-red-500 mt-1 mr-3"></i>
+                            <span>Transporte público inadequado devido à imunossupressão dos pacientes</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-money-bill-wave text-red-500 mt-1 mr-3"></i>
+                            <span>Famílias em vulnerabilidade social sem recursos para transporte privado</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-clock text-red-500 mt-1 mr-3"></i>
+                            <span>Interrupções frequentes nas terapias por dificuldades logísticas</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -66,34 +113,35 @@
 <!-- Features Section -->
 <div class="py-16 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-gray-900 text-center mb-12">Nossa Solução</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="bg-white p-8 rounded-lg shadow-lg text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6">
-                    <i class="fas fa-heart text-2xl text-green-600"></i>
+                    <i class="fas fa-calendar-check text-2xl text-green-600"></i>
                 </div>
-                <h5 class="text-xl font-semibold mb-4">Cuidado</h5>
+                <h5 class="text-xl font-semibold mb-4">Agendamento Automático</h5>
                 <p class="text-gray-600">
-                    Oferecemos cuidado personalizado e suporte contínuo para cada beneficiário.
+                    Sistema inteligente para agendamento de viagens com antecedência e confirmação automática.
                 </p>
             </div>
             
             <div class="bg-white p-8 rounded-lg shadow-lg text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6">
-                    <i class="fas fa-hands-helping text-2xl text-green-600"></i>
+                    <i class="fas fa-map-marker-alt text-2xl text-green-600"></i>
                 </div>
-                <h5 class="text-xl font-semibold mb-4">Solidariedade</h5>
+                <h5 class="text-xl font-semibold mb-4">Rastreamento em Tempo Real</h5>
                 <p class="text-gray-600">
-                    Construímos uma rede de apoio baseada na solidariedade e cooperação mútua.
+                    Acompanhamento da localização do veículo e tempo estimado de chegada para maior segurança.
                 </p>
             </div>
             
             <div class="bg-white p-8 rounded-lg shadow-lg text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6">
-                    <i class="fas fa-star text-2xl text-green-600"></i>
+                    <i class="fas fa-shield-alt text-2xl text-green-600"></i>
                 </div>
-                <h5 class="text-xl font-semibold mb-4">Esperança</h5>
+                <h5 class="text-xl font-semibold mb-4">Protocolos de Segurança</h5>
                 <p class="text-gray-600">
-                    Renovamos a esperança e abrimos novas possibilidades para o futuro.
+                    Validação rigorosa de voluntários e protocolos específicos para pacientes imunossuprimidos.
                 </p>
             </div>
         </div>
@@ -105,61 +153,135 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-6">Como Ajudar</h3>
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Como Participar</h3>
                 <p class="text-gray-600 mb-6">
-                    Existem várias maneiras de contribuir com o nosso projeto e fazer a diferença 
-                    na vida de pessoas que precisam de mobilidade assistida.
+                    Junte-se à nossa rede de solidariedade e faça a diferença na vida de crianças 
+                    e adolescentes em tratamento oncológico.
                 </p>
-                <ul class="space-y-4 mb-8">
-                    <li class="flex items-center">
-                        <i class="fas fa-check text-green-500 mr-3"></i>
-                        <span class="text-gray-700">Doações de cadeiras de rodas</span>
-                    </li>
-                    <li class="flex items-center">
-                        <i class="fas fa-check text-green-500 mr-3"></i>
-                        <span class="text-gray-700">Voluntariado</span>
-                    </li>
-                    <li class="flex items-center">
-                        <i class="fas fa-check text-green-500 mr-3"></i>
-                        <span class="text-gray-700">Doações financeiras</span>
-                    </li>
-                    <li class="flex items-center">
-                        <i class="fas fa-check text-green-500 mr-3"></i>
-                        <span class="text-gray-700">Divulgação do projeto</span>
-                    </li>
-                </ul>
+                
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Como Motorista Voluntário:</h4>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center">
+                            <i class="fas fa-user-check text-green-500 mr-3"></i>
+                            <span class="text-gray-700">Cadastre-se e passe pela validação de segurança</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-car text-green-500 mr-3"></i>
+                            <span class="text-gray-700">Disponibilize seu veículo nos horários convenientes</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-heart text-green-500 mr-3"></i>
+                            <span class="text-gray-700">Transporte pacientes com cuidado e carinho</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Outras Formas de Ajudar:</h4>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center">
+                            <i class="fas fa-donate text-green-500 mr-3"></i>
+                            <span class="text-gray-700">Doações para manutenção da plataforma</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-share-alt text-green-500 mr-3"></i>
+                            <span class="text-gray-700">Divulgação do projeto nas redes sociais</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-handshake text-green-500 mr-3"></i>
+                            <span class="text-gray-700">Parcerias institucionais</span>
+                        </li>
+                    </ul>
+                </div>
+                
                 <a href="{% url 'rodas:contato' %}" class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-300">
                     Entre em Contato
                 </a>
             </div>
             <div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-6">Estatísticas</h3>
-                <div class="grid grid-cols-2 gap-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Metas e Resultados Esperados</h3>
+                <div class="grid grid-cols-2 gap-6 mb-8">
                     <div class="bg-white p-6 rounded-lg shadow-lg text-center border border-gray-200">
-                        <h4 class="text-3xl font-bold text-green-600 mb-2">150+</h4>
-                        <p class="text-sm text-gray-600">Vidas Transformadas</p>
+                        <h4 class="text-3xl font-bold text-green-600 mb-2">30%</h4>
+                        <p class="text-sm text-gray-600">Redução no Abandono de Tratamento</p>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-lg text-center border border-gray-200">
-                        <h4 class="text-3xl font-bold text-green-600 mb-2">200+</h4>
-                        <p class="text-sm text-gray-600">Cadeiras Doadas</p>
+                        <h4 class="text-3xl font-bold text-green-600 mb-2">&lt;20min</h4>
+                        <p class="text-sm text-gray-600">Tempo Médio de Espera</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center border border-gray-200">
+                        <h4 class="text-3xl font-bold text-green-600 mb-2">4.5+</h4>
+                        <p class="text-sm text-gray-600">Nota de Satisfação Esperada</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg text-center border border-gray-200">
+                        <h4 class="text-3xl font-bold text-green-600 mb-2">50+</h4>
+                        <p class="text-sm text-gray-600">Novos Voluntários no 1º Semestre</p>
                     </div>
                 </div>
                 
                 <!-- User-specific content -->
                 {% if user.is_authenticated %}
-                <div class="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                     <h4 class="text-lg font-semibold text-green-900 mb-2">
                         <i class="fas fa-user-check mr-2"></i>
                         Área do Usuário
                     </h4>
                     <p class="text-sm text-green-700 mb-3">
-                        Como usuário logado, você tem acesso a recursos exclusivos!
+                        Como usuário logado, você pode solicitar ou oferecer viagens através do sistema!
                     </p>
                     <a href="{% url 'rodas:dashboard' %}" class="text-sm font-medium text-green-600 hover:text-green-500">
                         Acessar Dashboard →
                     </a>
                 </div>
+                {% else %}
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="text-lg font-semibold text-blue-900 mb-2">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Conformidade e Segurança
+                    </h4>
+                    <p class="text-sm text-blue-700">
+                        Nosso sistema está em conformidade com a LGPD e implementa rigorosos protocolos de 
+                        validação de voluntários e proteção de dados pessoais sensíveis.
+                    </p>
+                </div>
                 {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Technology Section -->
+<div class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Tecnologia Social</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Desenvolvemos uma plataforma digital responsiva que combina tecnologia de ponta com 
+                propósito social, conectando quem precisa com quem deseja ajudar de forma segura e eficiente.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow text-center">
+                <i class="fas fa-mobile-alt text-3xl text-green-600 mb-4"></i>
+                <h4 class="font-semibold text-gray-800 mb-2">Web Responsivo</h4>
+                <p class="text-sm text-gray-600">Acesso via navegador em qualquer dispositivo</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow text-center">
+                <i class="fas fa-lock text-3xl text-green-600 mb-4"></i>
+                <h4 class="font-semibold text-gray-800 mb-2">Segurança LGPD</h4>
+                <p class="text-sm text-gray-600">Proteção total dos dados pessoais sensíveis</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow text-center">
+                <i class="fas fa-star text-3xl text-green-600 mb-4"></i>
+                <h4 class="font-semibold text-gray-800 mb-2">Sistema de Avaliação</h4>
+                <p class="text-sm text-gray-600">Feedback contínuo para garantir qualidade</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow text-center">
+                <i class="fas fa-expand-arrows-alt text-3xl text-green-600 mb-4"></i>
+                <h4 class="font-semibold text-gray-800 mb-2">Escalabilidade</h4>
+                <p class="text-sm text-gray-600">Expansão para outros hospitais e regiões</p>
             </div>
         </div>
     </div>
