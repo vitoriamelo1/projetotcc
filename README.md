@@ -22,7 +22,8 @@ Espera-se também que o sistema contribua para ampliar a capacidade de atendimen
 A coleta de dados de uso da plataforma poderá oferecer informações relevantes para futuras melhorias no serviço, além de servir de subsídio para o desenvolvimento de políticas públicas voltadas ao suporte de pacientes oncológicos. 
 Finalmente, ao reduzir os índices de abandono terapêutico e as complicações médicas associadas, o projeto poderá ajudar a diminuir os custos indiretos do sistema público de saúde.
 
-OBS: No momento estamos realizando o levantamento de como será a melhor forma para darmos continuidade no projeto e montando as telas para melhor aplicação, temos o intuito de mudar a programação para utilizaçõ da framework django python usando o banco de dados em postgres, simplificando a autenticação e verificação de permissões. 
+OBS: No momento estamos trabalhando no desenvolvimento das telas. 
+
 
 
 
