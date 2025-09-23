@@ -1,68 +1,197 @@
 <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Solicite uma corrida</h1>
-    <form action="{% url 'rodas:solicita_corrida' %}" method="get" class="mt-4 space-y-6">
-        <div>
-            <label for="endereco_origem" class="block text-sm font-medium text-gray-700">Endereço de Origem</label>
-
-            <input
-                    id="endereco_origem"
-                    name="endereco_origem"
-                    type="search"
-                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
-                    placeholder="Adicione origem"
-            >
-        </div>
-        <div>
-            <label for="endereco_destino" class="block text-sm font-medium text-gray-700">Endereço de Destino</label>
-
-            <input
-                    id="endereco_destino"
-                    name="endereco_destino"
-                    type="search"
-                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
-                    placeholder="Adicione destino"
-            >
-        </div>
-        <div class="flex items-center gap-6 w-full">
-            <div class="flex-1">
-                <label for="data_agendamento" class="block text-sm font-medium text-gray-700">Data de
-                    Agendamento</label>
-
-                <div class="relative w-full">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                        <i class="fas fa-calendar-alt size-4 text-gray-400"></i>
-                    </div>
-                    <input datepicker id="data_agendamento" type="text" name="data_agendamento"
-                           class="disabled:bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
-                           placeholder="Select date"
-                           datepicker-format="dd/mm/yyyy"
-                           value="{% now 'd/m/Y' %}">
-                </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center space-x-3 mb-6">
+            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-plus text-green-600"></i>
             </div>
-            <div class="flex-1">
-                <label for="hora_agendamento" class="block text-sm font-medium text-gray-700">Hora Agendamento</label>
-
-                <div class="relative w-full">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                        <i class="fas fa-clock text-gray-400 size-4"></i>
-                    </div>
-                    <input id="hora_agendamento" type="time" name="hora_agendamento"
-                           class="disabled:bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
-                           placeholder="Select date"
-                           value="{% now 'H:i' %}">
-                </div>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Nova corrida</h2>
+                <p class="text-sm text-gray-600">Preencha os dados para solicitar uma corrida</p>
             </div>
         </div>
-        <div>
-            <button
-                    type="submit"
-                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 disabled:cursor-not-allowed"
-            >
-                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                        <i class="fas fa-car "></i>
-                    </span>
-                Solicitar Corrida
-            </button>
-        </div>
-    </form>
+
+        <form id="ride-request-form" action="{% url 'rodas:solicita_corrida' %}" method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Endereços -->
+            <div class="space-y-4">
+                <div class="relative">
+                    <label for="ride_endereco_origem" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-circle text-gray-400 mr-2"></i>
+                        Endereço de origem
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-map-marker-alt text-gray-400"></i>
+                        </div>
+                        <input id="ride_endereco_origem" name="endereco_origem" type="text" required
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                            placeholder="Digite o endereço de origem"
+                            value="{{ form.endereco_origem.value|default:'' }}">
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <label for="ride_endereco_destino" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-map-marker-alt text-green-500 mr-2"></i>
+                        Endereço de destino
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-hospital text-green-500"></i>
+                        </div>
+                        <input id="ride_endereco_destino" name="endereco_destino" type="text" required
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                            placeholder="Digite o endereço de destino"
+                            value="{{ form.endereco_destino.value|default:'' }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data e Hora -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="ride_data_agendamento" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>
+                        Data do agendamento
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-calendar text-gray-400"></i>
+                        </div>
+                        <input id="ride_data_agendamento" name="data_agendamento" type="date" required
+                            min="{% now 'Y-m-d' %}"
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                            value="{{ form.data_agendamento.value|default:'' }}">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="ride_hora_agendamento" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-clock text-blue-500 mr-2"></i>
+                        Horário
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-clock text-gray-400"></i>
+                        </div>
+                        <input id="ride_hora_agendamento" name="hora_agendamento" type="time" required
+                            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                            value="{{ form.hora_agendamento.value|default:'' }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opções adicionais -->
+            <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                <h4 class="text-sm font-medium text-gray-900">Informações adicionais</h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center">
+                        <input id="ride_tem_acompanhante" name="tem_acompanhante" type="checkbox"
+                            class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                        <label for="ride_tem_acompanhante" class="ml-2 block text-sm text-gray-700">
+                            Tem acompanhante
+                        </label>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input id="ride_necessita_cadeira_rodas" name="necessita_cadeira_rodas" type="checkbox"
+                            class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                        <label for="ride_necessita_cadeira_rodas" class="ml-2 block text-sm text-gray-700">
+                            Necessita cadeira de rodas
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="ride_observacoes" class="block text-sm font-medium text-gray-700 mb-2">
+                        Observações (opcional)
+                    </label>
+                    <textarea id="ride_observacoes" name="observacoes" rows="3"
+                        class="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                        placeholder="Informações importantes sobre a corrida...">{{ form.observacoes.value|default:'' }}</textarea>
+                </div>
+            </div>
+
+            <!-- Botões de ação -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                <button type="button" id="clear-form-btn"
+                    class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+                    <i class="fas fa-eraser mr-2"></i>
+                    Limpar formulário
+                </button>
+
+                <button type="submit"
+                    class="flex-1 px-4 py-3 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-car mr-2"></i>
+                    Solicitar corrida
+                </button>
+            </div>
+
+            <!-- Informações importantes -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-info-circle text-blue-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h4 class="text-sm font-medium text-blue-800">Informações importantes</h4>
+                        <div class="mt-2 text-sm text-blue-700">
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Sua solicitação será enviada para motoristas voluntários disponíveis</li>
+                                <li>Você receberá uma notificação quando um motorista aceitar sua corrida</li>
+                                <li>Certifique-se de que os endereços estão corretos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+    // Funcionalidade para limpar o formulário
+    document.getElementById('clear-form-btn').addEventListener('click', function () {
+        const form = document.getElementById('ride-request-form');
+        const inputs = form.querySelectorAll('input[type="text"], input[type="date"], input[type="time"], textarea');
+        const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+
+        inputs.forEach(input => input.value = '');
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+
+        // Focar no primeiro campo
+        document.getElementById('ride_endereco_origem').focus();
+    });
+
+    // Validação de data mínima
+    document.getElementById('ride_data_agendamento').addEventListener('change', function () {
+        const selectedDate = new Date(this.value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (selectedDate < today) {
+            alert('A data deve ser hoje ou uma data futura.');
+            this.value = '';
+        }
+    });
+
+    // Auto-preenchimento de data e hora padrão
+    document.addEventListener('DOMContentLoaded', function () {
+        const dataInput = document.getElementById('ride_data_agendamento');
+        const horaInput = document.getElementById('ride_hora_agendamento');
+
+        if (!dataInput.value) {
+            const today = new Date();
+            dataInput.value = today.toISOString().split('T')[0];
+        }
+
+        if (!horaInput.value) {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            horaInput.value = `${hours}:${minutes}`;
+        }
+    });
+</script>

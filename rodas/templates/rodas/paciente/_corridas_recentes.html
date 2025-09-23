@@ -1,19 +1,176 @@
 <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Suas corridas e agendamentos</h1>
-    <ul>
-        {% for corrida in corridas %}
-            <li>
-                <div>
-                    <p>
-                        <strong>
-                            {{ corrida.endereco_destino }}
-                        </strong>
-                    </p>
-                    <p>{{ corrida.data_hora_agendada|date:"d M • H:i" }}</p>
-                    <p>{{ corrida.status }}</p>
-                </div>
-            </li>
-        {% endfor %}
-    </ul>
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Suas corridas e agendamentos</h1>
 
+    {% if corridas %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Corrida mais recente - Destaque -->
+        <div class="lg:col-span-2">
+            {% with corridas.0 as ultima_corrida %}
+            <div class="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-6 border border-green-200 shadow-sm">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-sm font-medium text-gray-600">Mais recente</span>
+                    </div>
+                    <span class="px-3 py-1 text-xs font-medium rounded-full
+                                {% if ultima_corrida.status == 'pendente' %}bg-yellow-100 text-yellow-800
+                                {% elif ultima_corrida.status == 'aceita' %}bg-blue-100 text-blue-800
+                                {% elif ultima_corrida.status == 'em_andamento' %}bg-purple-100 text-purple-800
+                                {% elif ultima_corrida.status == 'concluida' %}bg-green-100 text-green-800
+                                {% elif ultima_corrida.status == 'cancelada' %}bg-red-100 text-red-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {% if ultima_corrida.status == 'pendente' %}Aguardando
+                        {% elif ultima_corrida.status == 'aceita' %}Aceita
+                        {% elif ultima_corrida.status == 'em_andamento' %}Em andamento
+                        {% elif ultima_corrida.status == 'motorista_chegou' %}Motorista chegou
+                        {% elif ultima_corrida.status == 'concluida' %}Concluída
+                        {% elif ultima_corrida.status == 'cancelada' %}Cancelada
+                        {% else %}{{ ultima_corrida.status|title }}{% endif %}
+                    </span>
+                </div>
+
+                <!-- Rota visual -->
+                <div class="relative mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                            <div class="w-0.5 h-8 bg-gray-300"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <div class="flex-1 space-y-6">
+                            <div>
+                                <p class="text-sm text-gray-600">De</p>
+                                <p class="font-medium text-gray-900 truncate">{{ ultima_corrida.endereco_origem }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Para</p>
+                                <p class="font-semibold text-gray-900 truncate">{{ ultima_corrida.endereco_destino }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informações da corrida -->
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                    <div>
+                        <p class="text-sm text-gray-600">Data e hora</p>
+                        <p class="font-medium text-gray-900">{{ ultima_corrida.data_hora_agendada|date:"d/m/Y • H:i" }}
+                        </p>
+                    </div>
+                    {% if ultima_corrida.motorista %}
+                    <div>
+                        <p class="text-sm text-gray-600">Motorista</p>
+                        <p class="font-medium text-gray-900">{{ ultima_corrida.motorista.usuario.get_short_name }}</p>
+                    </div>
+                    {% else %}
+                    <div>
+                        <p class="text-sm text-gray-600">Motorista</p>
+                        <p class="font-medium text-gray-500">Aguardando</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if ultima_corrida.observacoes %}
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <p class="text-sm text-gray-600">Observações</p>
+                    <p class="text-sm text-gray-900">{{ ultima_corrida.observacoes }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endwith %}
+        </div>
+
+        <!-- Outras corridas recentes -->
+        <div class="space-y-3">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Histórico</h3>
+            {% for corrida in corridas|slice:"1:6" %}
+            <div
+                class="bg-white rounded-lg p-4 border border-gray-200 hover:border-gray-300 transition-colors cursor-pointer">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-map-marker-alt text-green-500 text-sm"></i>
+                        <span class="font-medium text-gray-900 text-sm truncate">
+                            {{ corrida.endereco_destino|truncatechars:25 }}
+                        </span>
+                    </div>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full
+                                {% if corrida.status == 'pendente' %}bg-yellow-100 text-yellow-700
+                                {% elif corrida.status == 'aceita' %}bg-blue-100 text-blue-700
+                                {% elif corrida.status == 'em_andamento' %}bg-purple-100 text-purple-700
+                                {% elif corrida.status == 'concluida' %}bg-green-100 text-green-700
+                                {% elif corrida.status == 'cancelada' %}bg-red-100 text-red-700
+                                {% else %}bg-gray-100 text-gray-700{% endif %}">
+                        {% if corrida.status == 'pendente' %}Aguardando
+                        {% elif corrida.status == 'aceita' %}Aceita
+                        {% elif corrida.status == 'em_andamento' %}Em andamento
+                        {% elif corrida.status == 'motorista_chegou' %}Motorista chegou
+                        {% elif corrida.status == 'concluida' %}Concluída
+                        {% elif corrida.status == 'cancelada' %}Cancelada
+                        {% else %}{{ corrida.status|title }}{% endif %}
+                    </span>
+                </div>
+                <div class="flex items-center justify-between text-sm text-gray-600">
+                    <span>{{ corrida.data_hora_agendada|date:"d/m • H:i" }}</span>
+                    {% if corrida.motorista %}
+                    <span class="flex items-center space-x-1">
+                        <i class="fas fa-user text-xs"></i>
+                        <span>{{ corrida.motorista.usuario.get_short_name }}</span>
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if corridas|length > 6 %}
+            <div class="text-center pt-2">
+                <a href="#" class="text-green-600 hover:text-green-700 text-sm font-medium">
+                    Ver todas as corridas
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <!-- Estado vazio -->
+    <div class="text-center py-12">
+        <div class="mx-auto h-24 w-24 flex items-center justify-center rounded-full bg-gray-100 mb-4">
+            <i class="fas fa-car text-3xl text-gray-400"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhuma corrida encontrada</h3>
+        <p class="text-gray-600 mb-6">Você ainda não solicitou nenhuma corrida.</p>
+        <button onclick="scrollToRideForm()"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+            <i class="fas fa-plus mr-2"></i>
+            Solicitar primeira corrida
+        </button>
+    </div>
+    {% endif %}
 </div>
+
+<script>
+    function scrollToRideForm() {
+        // Find the ride request form
+        const rideForm = document.getElementById('ride-request-form');
+        if (rideForm) {
+            // Smooth scroll to the form
+            rideForm.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            // Focus on the first input field after a short delay
+            setTimeout(() => {
+                const firstInput = document.getElementById('ride_endereco_origem');
+                if (firstInput) {
+                    firstInput.focus();
+                    // Add a subtle highlight effect
+                    firstInput.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.2)';
+                    setTimeout(() => {
+                        firstInput.style.boxShadow = '';
+                    }, 2000);
+                }
+            }, 500);
+        }
+    }
+</script>
