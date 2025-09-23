@@ -112,3 +112,10 @@ class SolicitaCorridaform(forms.Form):
     endereco_destino = forms.CharField(max_length=255, label="Endereço de Destino")
     data_agendamento = forms.DateField(label="Data")
     hora_agendamento = forms.TimeField(label="Hora")
+    tem_acompanhante = forms.BooleanField(required=False, label="Tem Acompanhante")
+    necessita_cadeira_rodas = forms.BooleanField(
+        required=False, label="Necessita Cadeira de Rodas"
+    )
+    observacoes = forms.CharField(
+        widget=forms.Textarea, required=False, label="Observações", max_length=500
+    )

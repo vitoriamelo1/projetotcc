@@ -234,6 +234,11 @@ def dashboard_view(request):
             else []
         )
 
+        # Calcular estatísticas
+        total_corridas = corridas.count()
+        corridas_concluidas = corridas.filter(status=CorridaStatus.CONCLUIDA).count()
+        corridas_pendentes = corridas.filter(status=CorridaStatus.PENDENTE).count()
+
         return render(
             request,
             "rodas/paciente/dashboard.html",
@@ -241,8 +246,41 @@ def dashboard_view(request):
                 "title": "Dashboard - Esperança Sobre Rodas",
                 "user": usuario,
                 "corridas": corridas,
+                "total_corridas": total_corridas,
+                "corridas_concluidas": corridas_concluidas,
+                "corridas_pendentes": corridas_pendentes,
             },
         )
+
+    # Para motoristas
+    if usuario.tipo_usuario == TipoUsuario.MOTORISTA:
+        try:
+            motorista = Motorista.objects.get(usuario=usuario)
+
+            # Corridas pendentes (sem motorista atribuído)
+            corridas_pendentes = Corrida.objects.filter(
+                status=CorridaStatus.PENDENTE, motorista__isnull=True
+            ).order_by("data_hora_agendada")[:10]
+
+            # Corridas do motorista
+            corridas_motorista = Corrida.objects.filter(motorista=motorista).order_by(
+                "-data_hora_agendada"
+            )
+
+            return render(
+                request,
+                "rodas/motorista/dashboard.html",
+                {
+                    "title": "Dashboard Motorista - Esperança Sobre Rodas",
+                    "user": usuario,
+                    "corridas_pendentes": corridas_pendentes,
+                    "corridas_motorista": corridas_motorista,
+                },
+            )
+        except Motorista.DoesNotExist:
+            # Se não tem perfil de motorista, redireciona para criar
+            messages.error(request, "Perfil de motorista não encontrado.")
+            return redirect("rodas:register_motorista")
 
     return render(
         request,
@@ -268,26 +306,44 @@ def solicitar_corrida_view(request):
     context = {
         "title": "Solicitar Corrida - Esperança Sobre Rodas",
         "form": None,
+        "success": False,
     }
 
     if request.method == "POST":
         form = SolicitaCorridaform(request.POST)
         if form.is_valid():
-            corrida = Corrida()
-            corrida.paciente = Paciente.objects.get(usuario=user)
-            corrida.endereco_origem = form.cleaned_data["endereco_origem"]
-            corrida.endereco_destino = form.cleaned_data["endereco_destino"]
-            corrida.status = CorridaStatus.PENDENTE
+            try:
+                corrida = Corrida()
+                corrida.paciente = Paciente.objects.get(usuario=user)
+                corrida.endereco_origem = form.cleaned_data["endereco_origem"]
+                corrida.endereco_destino = form.cleaned_data["endereco_destino"]
+                corrida.status = CorridaStatus.PENDENTE
+                corrida.tem_acompanhante = form.cleaned_data.get(
+                    "tem_acompanhante", False
+                )
+                corrida.necessita_cadeira_rodas = form.cleaned_data.get(
+                    "necessita_cadeira_rodas", False
+                )
+                corrida.observacoes = form.cleaned_data.get("observacoes", "")
 
-            data_agendamento = form.cleaned_data["data_agendamento"]
-            hora_agendamento = form.cleaned_data["hora_agendamento"]
-            data_hora_agendada = timezone.datetime.combine(
-                data_agendamento, hora_agendamento
-            )
-            corrida.data_hora_agendada = data_hora_agendada
+                data_agendamento = form.cleaned_data["data_agendamento"]
+                hora_agendamento = form.cleaned_data["hora_agendamento"]
+                data_hora_agendada = timezone.datetime.combine(
+                    data_agendamento, hora_agendamento
+                )
+                corrida.data_hora_agendada = data_hora_agendada
 
-            corrida.save()
-            messages.success(request, "Sua corrida foi solicitada com sucesso!")
+                corrida.save()
+
+                messages.success(request, "Sua corrida foi solicitada com sucesso!")
+                context["success"] = True
+                # Limpar o formulário após sucesso
+                form = SolicitaCorridaform()
+                context["form"] = form
+
+            except Exception as e:
+                messages.error(request, "Erro ao solicitar corrida. Tente novamente.")
+                context["form"] = form
         else:
             messages.error(request, "Por favor, corrija os erros no formulário.")
             context["form"] = form

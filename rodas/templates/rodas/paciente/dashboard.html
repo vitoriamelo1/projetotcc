@@ -55,7 +55,7 @@
                             </div>
                             <span class="text-sm text-gray-600">Total de corridas</span>
                         </div>
-                        <span class="font-semibold text-gray-900">{{ corridas|length }}</span>
+                        <span class="font-semibold text-gray-900">{{ total_corridas }}</span>
                     </div>
 
                     <div class="flex items-center justify-between">
@@ -65,10 +65,7 @@
                             </div>
                             <span class="text-sm text-gray-600">Concluídas</span>
                         </div>
-                        <span class="font-semibold text-gray-900">
-                            {% for corrida in corridas %}{% if corrida.status == 'concluida' %}{{ forloop.counter0|add:1
-                            }}{% endif %}{% empty %}0{% endfor %}
-                        </span>
+                        <span class="font-semibold text-gray-900">{{ corridas_concluidas }}</span>
                     </div>
 
                     <div class="flex items-center justify-between">
@@ -78,10 +75,7 @@
                             </div>
                             <span class="text-sm text-gray-600">Pendentes</span>
                         </div>
-                        <span class="font-semibold text-gray-900">
-                            {% for corrida in corridas %}{% if corrida.status == 'pendente' %}{{ forloop.counter0|add:1
-                            }}{% endif %}{% empty %}0{% endfor %}
-                        </span>
+                        <span class="font-semibold text-gray-900">{{ corridas_pendentes }}</span>
                     </div>
                 </div>
             </div>
