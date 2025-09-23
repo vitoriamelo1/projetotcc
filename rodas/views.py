@@ -5,7 +5,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
-from .forms import PacienteRegisterForm, SolicitaCorridaform
+from .forms import PacienteRegisterForm, MotoristaRegisterForm, SolicitaCorridaform
 from .models import Usuario, Paciente, TipoUsuario, Corrida, CorridaStatus, Motorista
 
 
@@ -139,6 +139,55 @@ def register_view(request):
     return render(request, "rodas/paciente/register.html", context)
 
 
+def register_motorista_view(request):
+    """
+    View para registro de motoristas voluntários.
+    """
+    if request.user.is_authenticated:
+        return redirect("rodas:dashboard")
+
+    if request.method == "POST":
+        form = MotoristaRegisterForm(request.POST)
+        if form.is_valid():
+            usuario = Usuario.objects.create_user(
+                email=form.cleaned_data["email"],
+                password=form.cleaned_data["password1"],
+                nome_completo=form.cleaned_data["nome_completo"],
+                cpf=form.cleaned_data["cpf"],
+                telefone=form.cleaned_data["telefone"],
+                tipo_usuario="motorista",
+                ativo=True,
+            )
+            Motorista.objects.create(
+                usuario=usuario,
+                marca_veiculo=form.cleaned_data["marca_veiculo"],
+                modelo_veiculo=form.cleaned_data["modelo_veiculo"],
+                cor_veiculo=form.cleaned_data["cor_veiculo"],
+                ano_veiculo=form.cleaned_data.get("ano_veiculo"),
+                placa_veiculo=form.cleaned_data.get("placa_veiculo", ""),
+                cnh_numero=form.cleaned_data.get("cnh_numero", ""),
+                cnh_validade=form.cleaned_data.get("cnh_validade"),
+                aceite_termos_voluntariado=form.cleaned_data[
+                    "aceite_termos_voluntariado"
+                ],
+                data_aceite_termos=timezone.now(),
+                status_aprovacao="pendente",
+            )
+            messages.success(
+                request,
+                "Cadastro realizado com sucesso! Seu perfil será analisado pela administração.",
+            )
+            return redirect("rodas:login")
+    else:
+        form = MotoristaRegisterForm()
+
+    context = {
+        "title": "Cadastro de Motorista - Esperança Sobre Rodas",
+        "form": form,
+    }
+    return render(request, "rodas/motorista/register.html", context)
+
+
 def password_reset_view(request):
     """
     View para solicitar reset de senha.
@@ -185,16 +234,24 @@ def dashboard_view(request):
             else []
         )
 
-        return render(request, "rodas/paciente/dashboard.html", {
+        return render(
+            request,
+            "rodas/paciente/dashboard.html",
+            {
+                "title": "Dashboard - Esperança Sobre Rodas",
+                "user": usuario,
+                "corridas": corridas,
+            },
+        )
+
+    return render(
+        request,
+        "rodas/motorista/dashboard.html",
+        {
             "title": "Dashboard - Esperança Sobre Rodas",
             "user": usuario,
-            "corridas": corridas,
-        })
-
-    return render(request, "rodas/motorista/dashboard.html", {
-        "title": "Dashboard - Esperança Sobre Rodas",
-        "user": usuario,
-    })
+        },
+    )
 
 
 @login_required

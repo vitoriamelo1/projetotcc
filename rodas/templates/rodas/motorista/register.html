@@ -1,0 +1,279 @@
+{% extends 'rodas/base.html' %}
+
+{% block title %}Cadastro de Motorista - Esperança Sobre Rodas{% endblock %}
+
+{% block container_content %}
+<div class="min-h-screen space-y-8 max-w-md mx-auto">
+    <div>
+        <div class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-100">
+            <i class="fas fa-car text-2xl text-blue-600"></i>
+        </div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Cadastro de Motorista Voluntário
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            Ou
+            <a href="{% url 'rodas:login' %}" class="font-medium text-blue-600 hover:text-blue-500">
+                faça login em sua conta existente
+            </a>
+        </p>
+    </div>
+
+    <form class="mt-8 space-y-6" method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            {% for error in form.non_field_errors %}
+            <div>{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <fieldset class="space-y-4">
+            <legend class="text-lg font-medium text-gray-900">Dados Pessoais</legend>
+            <div>
+                <label for="nome_completo" class="block text-sm font-medium text-gray-700">Nome Completo</label>
+                {% if form.nome_completo.errors %}
+                <div class="text-red-600 text-xs mb-1">{{ form.nome_completo.errors.0 }}</div>
+                {% endif %}
+                <input id="nome_completo" name="nome_completo" type="text" required
+                    value="{{ form.nome_completo.value|default:'' }}"
+                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                    placeholder="Seu nome completo">
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                {% if form.email.errors %}
+                <div class="text-red-600 text-xs mb-1">{{ form.email.errors.0 }}</div>
+                {% endif %}
+                <input id="email" name="email" type="email" required value="{{ form.email.value|default:'' }}"
+                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                    placeholder="seu@email.com">
+            </div>
+
+            <div>
+                <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
+                {% if form.cpf.errors %}
+                <div class="text-red-600 text-xs mb-1">{{ form.cpf.errors.0 }}</div>
+                {% endif %}
+                <input id="cpf" name="cpf" type="text" required value="{{ form.cpf.value|default:'' }}"
+                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                    placeholder="000.000.000-00">
+            </div>
+
+            <div>
+                <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
+                {% if form.telefone.errors %}
+                <div class="text-red-600 text-xs mb-1">{{ form.telefone.errors.0 }}</div>
+                {% endif %}
+                <input id="telefone" name="telefone" type="text" required value="{{ form.telefone.value|default:'' }}"
+                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                    placeholder="(11) 99999-9999">
+            </div>
+
+            <div>
+                <label for="password1" class="block text-sm font-medium text-gray-700">Senha</label>
+                {% if form.password1.errors %}
+                <div class="text-red-600 text-xs mb-1">{{ form.password1.errors.0 }}</div>
+                {% endif %}
+                <input id="password1" name="password1" type="password" required
+                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                    placeholder="Senha">
+            </div>
+
+            <div>
+                <label for="password2" class="block text-sm font-medium text-gray-700">Confirmar Senha</label>
+                {% if form.password2.errors %}
+                <div class="text-red-600 text-xs mb-1">{{ form.password2.errors.0 }}</div>
+                {% endif %}
+                <input id="password2" name="password2" type="password" required
+                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                    placeholder="Confirme sua senha">
+            </div>
+        </fieldset>
+
+        <fieldset class="space-y-4">
+            <legend class="text-lg font-medium text-gray-900">Dados do Veículo</legend>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="marca_veiculo" class="block text-sm font-medium text-gray-700">Marca</label>
+                    {% if form.marca_veiculo.errors %}
+                    <div class="text-red-600 text-xs mb-1">{{ form.marca_veiculo.errors.0 }}</div>
+                    {% endif %}
+                    <input id="marca_veiculo" name="marca_veiculo" type="text" required
+                        value="{{ form.marca_veiculo.value|default:'' }}"
+                        class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                        placeholder="Ex: Toyota">
+                </div>
+
+                <div>
+                    <label for="modelo_veiculo" class="block text-sm font-medium text-gray-700">Modelo</label>
+                    {% if form.modelo_veiculo.errors %}
+                    <div class="text-red-600 text-xs mb-1">{{ form.modelo_veiculo.errors.0 }}</div>
+                    {% endif %}
+                    <input id="modelo_veiculo" name="modelo_veiculo" type="text" required
+                        value="{{ form.modelo_veiculo.value|default:'' }}"
+                        class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                        placeholder="Ex: Corolla">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="cor_veiculo" class="block text-sm font-medium text-gray-700">Cor</label>
+                    {% if form.cor_veiculo.errors %}
+                    <div class="text-red-600 text-xs mb-1">{{ form.cor_veiculo.errors.0 }}</div>
+                    {% endif %}
+                    <input id="cor_veiculo" name="cor_veiculo" type="text" required
+                        value="{{ form.cor_veiculo.value|default:'' }}"
+                        class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                        placeholder="Ex: Branco">
+                </div>
+
+                <div>
+                    <label for="ano_veiculo" class="block text-sm font-medium text-gray-700">Ano</label>
+                    {% if form.ano_veiculo.errors %}
+                    <div class="text-red-600 text-xs mb-1">{{ form.ano_veiculo.errors.0 }}</div>
+                    {% endif %}
+                    <input id="ano_veiculo" name="ano_veiculo" type="number"
+                        value="{{ form.ano_veiculo.value|default:'' }}"
+                        class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                        placeholder="Ex: 2020">
+                </div>
+            </div>
+
+            <div>
+                <label for="placa_veiculo" class="block text-sm font-medium text-gray-700">Placa do Veículo</label>
+                {% if form.placa_veiculo.errors %}
+                <div class="text-red-600 text-xs mb-1">{{ form.placa_veiculo.errors.0 }}</div>
+                {% endif %}
+                <input id="placa_veiculo" name="placa_veiculo" type="text"
+                    value="{{ form.placa_veiculo.value|default:'' }}"
+                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                    placeholder="ABC-1234 ou ABC1D23">
+            </div>
+        </fieldset>
+
+        <fieldset class="space-y-4">
+            <legend class="text-lg font-medium text-gray-900">Dados da CNH</legend>
+            <div>
+                <label for="cnh_numero" class="block text-sm font-medium text-gray-700">Número da CNH</label>
+                {% if form.cnh_numero.errors %}
+                <div class="text-red-600 text-xs mb-1">{{ form.cnh_numero.errors.0 }}</div>
+                {% endif %}
+                <input id="cnh_numero" name="cnh_numero" type="text" value="{{ form.cnh_numero.value|default:'' }}"
+                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100"
+                    placeholder="Número da CNH">
+            </div>
+
+            <div>
+                <label for="cnh_validade" class="block text-sm font-medium text-gray-700">Validade da CNH</label>
+                {% if form.cnh_validade.errors %}
+                <div class="text-red-600 text-xs mb-1">{{ form.cnh_validade.errors.0 }}</div>
+                {% endif %}
+                <input id="cnh_validade" name="cnh_validade" type="date"
+                    value="{{ form.cnh_validade.value|default:'' }}"
+                    class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100">
+            </div>
+        </fieldset>
+
+        <div class="flex items-center">
+            <input id="aceite_termos_voluntariado" name="aceite_termos_voluntariado" type="checkbox" value="true"
+                required {% if form.aceite_termos_voluntariado.value %}checked{% endif %}
+                class="appearance-none relative block size-4 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100">
+            <label for="aceite_termos_voluntariado" class="ms-2 block text-sm font-medium text-gray-700">Aceito os <a
+                    href="/download/termos_condicoes_motorista.pdf" class="text-blue-500 dark:text-blue-400">termos e
+                    condições de voluntariado</a></label>
+            {% if form.aceite_termos_voluntariado.errors %}
+            <div class="text-red-600 text-xs ml-2">{{ form.aceite_termos_voluntariado.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-info-circle text-yellow-400"></i>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-yellow-800">
+                        Processo de Aprovação
+                    </h3>
+                    <div class="mt-2 text-sm text-yellow-700">
+                        <p>Seu cadastro será analisado pela nossa equipe. Você receberá um email com o resultado da
+                            análise em até 48 horas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <button type="submit"
+                class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:cursor-not-allowed">
+                <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <i class="fas fa-car"></i>
+                </span>
+                Cadastrar como Motorista
+            </button>
+        </div>
+
+        <div class="text-center">
+            <p class="text-sm text-gray-600">
+                Quer se cadastrar como paciente?
+                <a href="{% url 'rodas:register' %}" class="font-medium text-green-600 hover:text-green-500">
+                    Clique aqui
+                </a>
+            </p>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Formatação automática de CPF
+    document.getElementById('cpf').addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        e.target.value = value;
+    });
+
+    // Formatação automática de telefone
+    document.getElementById('telefone').addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        value = value.replace(/(\d{2})(\d)/, '($1) $2');
+        value = value.replace(/(\d{4})(\d)/, '$1-$2');
+        value = value.replace(/(\d{4})-(\d)(\d{4})/, '$1$2-$3');
+        e.target.value = value;
+    });
+
+    // Formatação automática de placa
+    document.getElementById('placa_veiculo').addEventListener('input', function (e) {
+        let value = e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+        if (value.length <= 7) {
+            // Formato antigo: ABC-1234
+            value = value.replace(/(\w{3})(\w)/, '$1-$2');
+        } else {
+            // Formato Mercosul: ABC1D23
+            value = value.substring(0, 7);
+        }
+        e.target.value = value;
+    });
+
+    // Validação de ano do veículo
+    document.getElementById('ano_veiculo').addEventListener('input', function (e) {
+        const currentYear = new Date().getFullYear();
+        const minYear = 1990;
+        const value = parseInt(e.target.value);
+
+        if (value && (value < minYear || value > currentYear + 1)) {
+            e.target.setCustomValidity(`Ano deve estar entre ${minYear} e ${currentYear + 1}`);
+        } else {
+            e.target.setCustomValidity('');
+        }
+    });
+</script>
+{% endblock %}

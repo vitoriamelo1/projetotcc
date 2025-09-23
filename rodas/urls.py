@@ -13,6 +13,9 @@ urlpatterns = [
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
     path("register/", views.register_view, name="register"),
+    path(
+        "register/motorista/", views.register_motorista_view, name="register_motorista"
+    ),
     path("password-reset/", views.password_reset_view, name="password_reset"),
     path(
         "password-reset/done/",
