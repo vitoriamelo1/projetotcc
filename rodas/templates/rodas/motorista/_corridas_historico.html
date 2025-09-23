@@ -1,0 +1,229 @@
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Suas corridas</h1>
+
+    {% if corridas_motorista %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Corrida mais recente - Destaque -->
+        <div class="lg:col-span-2">
+            {% with corridas_motorista.0 as ultima_corrida %}
+            <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200 shadow-sm">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <span class="text-sm font-medium text-gray-600">Mais recente</span>
+                    </div>
+                    <span class="px-3 py-1 text-xs font-medium rounded-full
+                                {% if ultima_corrida.status == 'aceita' %}bg-blue-100 text-blue-800
+                                {% elif ultima_corrida.status == 'em_andamento' %}bg-purple-100 text-purple-800
+                                {% elif ultima_corrida.status == 'motorista_chegou' %}bg-orange-100 text-orange-800
+                                {% elif ultima_corrida.status == 'concluida' %}bg-green-100 text-green-800
+                                {% elif ultima_corrida.status == 'cancelada' %}bg-red-100 text-red-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {% if ultima_corrida.status == 'aceita' %}Aceita
+                        {% elif ultima_corrida.status == 'em_andamento' %}Em andamento
+                        {% elif ultima_corrida.status == 'motorista_chegou' %}Chegou ao local
+                        {% elif ultima_corrida.status == 'concluida' %}Concluída
+                        {% elif ultima_corrida.status == 'cancelada' %}Cancelada
+                        {% else %}{{ ultima_corrida.status|title }}{% endif %}
+                    </span>
+                </div>
+
+                <!-- Informações do paciente -->
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-green-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-900">{{ ultima_corrida.paciente.usuario.get_short_name }}</p>
+                        <p class="text-sm text-gray-600">Paciente</p>
+                    </div>
+                </div>
+
+                <!-- Rota visual -->
+                <div class="relative mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                            <div class="w-0.5 h-8 bg-gray-300"></div>
+                            <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                        </div>
+                        <div class="flex-1 space-y-6">
+                            <div>
+                                <p class="text-sm text-gray-600">Origem</p>
+                                <p class="font-medium text-gray-900 truncate">{{ ultima_corrida.endereco_origem }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Destino</p>
+                                <p class="font-semibold text-gray-900 truncate">{{ ultima_corrida.endereco_destino }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informações da corrida -->
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                    <div>
+                        <p class="text-sm text-gray-600">Data e hora</p>
+                        <p class="font-medium text-gray-900">{{ ultima_corrida.data_hora_agendada|date:"d/m/Y • H:i" }}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600">Status</p>
+                        <p class="font-medium text-gray-900">
+                            {% if ultima_corrida.status == 'aceita' %}Aceita
+                            {% elif ultima_corrida.status == 'em_andamento' %}Em andamento
+                            {% elif ultima_corrida.status == 'motorista_chegou' %}Chegou ao local
+                            {% elif ultima_corrida.status == 'concluida' %}Concluída
+                            {% elif ultima_corrida.status == 'cancelada' %}Cancelada
+                            {% else %}{{ ultima_corrida.status|title }}{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Ações da corrida atual -->
+                {% if ultima_corrida.status == 'aceita' %}
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <button onclick="startRide({{ ultima_corrida.id }})"
+                        class="w-full px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors">
+                        <i class="fas fa-play mr-2"></i>
+                        Iniciar corrida
+                    </button>
+                </div>
+                {% elif ultima_corrida.status == 'em_andamento' %}
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <button onclick="arriveAtLocation({{ ultima_corrida.id }})"
+                        class="w-full px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        Cheguei ao local
+                    </button>
+                </div>
+                {% elif ultima_corrida.status == 'motorista_chegou' %}
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <button onclick="completeRide({{ ultima_corrida.id }})"
+                        class="w-full px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Finalizar corrida
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            {% endwith %}
+        </div>
+
+        <!-- Outras corridas recentes -->
+        <div class="space-y-3">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Histórico</h3>
+            {% for corrida in corridas_motorista|slice:"1:6" %}
+            <div
+                class="bg-white rounded-lg p-4 border border-gray-200 hover:border-gray-300 transition-colors cursor-pointer">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-user text-blue-500 text-sm"></i>
+                        <span class="font-medium text-gray-900 text-sm">
+                            {{ corrida.paciente.usuario.get_short_name }}
+                        </span>
+                    </div>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full
+                                {% if corrida.status == 'aceita' %}bg-blue-100 text-blue-700
+                                {% elif corrida.status == 'em_andamento' %}bg-purple-100 text-purple-700
+                                {% elif corrida.status == 'motorista_chegou' %}bg-orange-100 text-orange-700
+                                {% elif corrida.status == 'concluida' %}bg-green-100 text-green-700
+                                {% elif corrida.status == 'cancelada' %}bg-red-100 text-red-700
+                                {% else %}bg-gray-100 text-gray-700{% endif %}">
+                        {% if corrida.status == 'aceita' %}Aceita
+                        {% elif corrida.status == 'em_andamento' %}Em andamento
+                        {% elif corrida.status == 'motorista_chegou' %}Chegou
+                        {% elif corrida.status == 'concluida' %}Concluída
+                        {% elif corrida.status == 'cancelada' %}Cancelada
+                        {% else %}{{ corrida.status|title }}{% endif %}
+                    </span>
+                </div>
+                <div class="text-sm text-gray-600 mb-1">
+                    <i class="fas fa-map-marker-alt mr-1"></i>
+                    {{ corrida.endereco_destino|truncatechars:30 }}
+                </div>
+                <div class="text-sm text-gray-600">
+                    {{ corrida.data_hora_agendada|date:"d/m • H:i" }}
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if corridas_motorista|length > 6 %}
+            <div class="text-center pt-2">
+                <a href="#" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                    Ver todas as corridas
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <!-- Estado vazio -->
+    <div class="text-center py-12">
+        <div class="mx-auto h-24 w-24 flex items-center justify-center rounded-full bg-gray-100 mb-4">
+            <i class="fas fa-car text-3xl text-gray-400"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhuma corrida realizada</h3>
+        <p class="text-gray-600 mb-6">Você ainda não aceitou nenhuma corrida.</p>
+        <button onclick="scrollToPendingRides()"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <i class="fas fa-search mr-2"></i>
+            Ver corridas disponíveis
+        </button>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function startRide(rideId) {
+        if (confirm('Iniciar esta corrida?')) {
+            updateRideStatus(rideId, 'em_andamento');
+        }
+    }
+
+    function arriveAtLocation(rideId) {
+        if (confirm('Confirmar chegada ao local de origem?')) {
+            updateRideStatus(rideId, 'motorista_chegou');
+        }
+    }
+
+    function completeRide(rideId) {
+        if (confirm('Finalizar esta corrida?')) {
+            updateRideStatus(rideId, 'concluida');
+        }
+    }
+
+    function updateRideStatus(rideId, status) {
+        fetch(`/api/corridas/${rideId}/status/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: status })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Erro ao atualizar status: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Erro ao atualizar status. Tente novamente.');
+            });
+    }
+
+    function scrollToPendingRides() {
+        const pendingRides = document.querySelector('[data-section="pending-rides"]');
+        if (pendingRides) {
+            pendingRides.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    }
+</script>
