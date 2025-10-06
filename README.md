@@ -49,14 +49,18 @@ Docker e Docker Compose
 Como rodar o projeto: 
 
 1.Clone o repositório
+
 2.Configure as variáveis de ambiente
 Copie o arquivo de exemplo .env.example para .env:
 cp .env.example .env
+
 3.Inicie o projeto com Docker Compose
 Certifique-se de que o Docker e o Docker Compose estão instalados. Para subir os serviços (banco de dados, Redis, etc):
+
 <<<<<<< HEAD
 docker compose --profile app up app
 =======
+
 docker compose up app
 >>>>>>> a980c2c7ab85dd2b0c035cc83ab1aa10f7e90aa8
 Para rodar em modo de produção, utilize:
@@ -67,6 +71,7 @@ Nosso modulo Adm está no django, poderá ter acesso com o link e as credenciais
 https://esperanca-sobre-rodas.zerun.com.br/admin/
 email: vitoriamelo@gmail.com
 senha: Jorge1234...
+
 
 
 
