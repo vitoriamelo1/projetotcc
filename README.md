@@ -23,6 +23,14 @@ A coleta de dados de uso da plataforma poderá oferecer informações relevantes
 Finalmente, ao reduzir os índices de abandono terapêutico e as complicações médicas associadas, o projeto poderá ajudar a diminuir os custos indiretos do sistema público de saúde.
 
 OBS: No momento estamos trabalhando no desenvolvimento das telas. 
+Já temos as telas a seguir todas funcionais:
+- Tela de login de ambos os usuarios
+- Cadastro de paciente
+- Cadastro de motorista
+- Agendamento de corrida
+  
+
+
 
 
 
