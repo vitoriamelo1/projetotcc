@@ -304,6 +304,7 @@ def dashboard_view(request):
 
 
 @login_required
+@require_http_methods(["POST"])
 def solicitar_corrida_view(request):
     """
     View para solicitar uma corrida - exemplo de funcionalidade para pacientes.
@@ -320,55 +321,73 @@ def solicitar_corrida_view(request):
         "success": False,
     }
 
-    if request.method == "POST":
-        form = SolicitaCorridaform(request.POST)
-        if form.is_valid():
-            try:
-                corrida = Corrida()
-                corrida.paciente = Paciente.objects.get(usuario=user)
-                corrida.endereco_origem = form.cleaned_data["endereco_origem"]
-                corrida.endereco_destino = form.cleaned_data["endereco_destino"]
-                corrida.status = CorridaStatus.PENDENTE
-                corrida.tem_acompanhante = form.cleaned_data.get(
-                    "tem_acompanhante", False
+    form = SolicitaCorridaform(request.POST)
+    is_ajax = request.headers.get("x-requested-with") == "XMLHttpRequest"
+    if form.is_valid():
+        try:
+            corrida = Corrida()
+            corrida.paciente = Paciente.objects.get(usuario=user)
+            corrida.endereco_origem = form.cleaned_data["endereco_origem"]
+            corrida.endereco_destino = form.cleaned_data["endereco_destino"]
+            corrida.status = CorridaStatus.PENDENTE
+            corrida.tem_acompanhante = form.cleaned_data.get("tem_acompanhante", False)
+            corrida.necessita_cadeira_rodas = form.cleaned_data.get(
+                "necessita_cadeira_rodas", False
+            )
+            corrida.observacoes = form.cleaned_data.get("observacoes", "")
+
+            data_agendamento = form.cleaned_data["data_agendamento"]
+            hora_agendamento = form.cleaned_data["hora_agendamento"]
+            data_hora_agendada = timezone.datetime.combine(
+                data_agendamento, hora_agendamento
+            )
+            corrida.data_hora_agendada = data_hora_agendada
+
+            corrida.save()
+
+            # Resposta para requisições AJAX
+            if is_ajax:
+                return JsonResponse(
+                    {
+                        "success": True,
+                        "message": "Sua corrida foi solicitada com sucesso!",
+                        "corrida_id": corrida.id,
+                        "data_hora_agendada": corrida.data_hora_agendada.isoformat(),
+                    }
                 )
-                corrida.necessita_cadeira_rodas = form.cleaned_data.get(
-                    "necessita_cadeira_rodas", False
+
+            messages.success(request, "Sua corrida foi solicitada com sucesso!")
+            context["success"] = True
+            # Limpar o formulário após sucesso
+            form = SolicitaCorridaform()
+            context["form"] = form
+
+        except Exception:
+            if is_ajax:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "message": "Erro ao solicitar corrida. Tente novamente.",
+                    },
+                    status=500,
                 )
-                corrida.observacoes = form.cleaned_data.get("observacoes", "")
-
-                data_agendamento = form.cleaned_data["data_agendamento"]
-                hora_agendamento = form.cleaned_data["hora_agendamento"]
-                data_hora_agendada = timezone.datetime.combine(
-                    data_agendamento, hora_agendamento
-                )
-                corrida.data_hora_agendada = data_hora_agendada
-
-                corrida.save()
-
-                messages.success(request, "Sua corrida foi solicitada com sucesso!")
-                context["success"] = True
-                # Limpar o formulário após sucesso
-                form = SolicitaCorridaform()
-                context["form"] = form
-
-            except Exception:
-                messages.error(request, "Erro ao solicitar corrida. Tente novamente.")
-                context["form"] = form
-        else:
-            messages.error(request, "Por favor, corrija os erros no formulário.")
+            messages.error(request, "Erro ao solicitar corrida. Tente novamente.")
             context["form"] = form
     else:
-        initial_data = {
-            "endereco_origem": request.GET.get("endereco_origem", ""),
-            "endereco_destino": request.GET.get("endereco_destino", ""),
-            "data_agendamento": request.GET.get("data_agendamento", ""),
-            "hora_agendamento": request.GET.get("hora_agendamento", ""),
-        }
-        form = SolicitaCorridaform(initial=initial_data)
+        if is_ajax:
+            # Retornar erros de validação estruturados
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "Por favor, corrija os erros no formulário.",
+                    "errors": form.errors.get_json_data(),
+                },
+                status=400,
+            )
+        messages.error(request, "Por favor, corrija os erros no formulário.")
         context["form"] = form
 
-    return render(request, "rodas/paciente/solicita_corrida.html", context)
+    return redirect("rodas:dashboard")
 
 
 @login_required
