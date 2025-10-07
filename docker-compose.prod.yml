@@ -22,6 +22,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: vitoriamelo1/rodas:latest
+    restart: unless-stopped
     env_file:
       - .env
     environment:
@@ -41,6 +42,7 @@ services:
 
   db:
     image: postgres:17-alpine
+    restart: unless-stopped
     env_file:
       - .env
     environment:
