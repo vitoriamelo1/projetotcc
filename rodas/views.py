@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 import json
+from django.core.paginator import Paginator
 
 from .forms import PacienteRegisterForm, MotoristaRegisterForm, SolicitaCorridaform
 from .models import (
@@ -630,3 +631,63 @@ def atualizar_status_corrida_view(request, corrida_id):
         return JsonResponse(
             {"success": False, "message": "Erro interno. Tente novamente."}
         )
+
+
+@login_required
+def corridas_paciente_list_view(request):
+    """
+    Lista de corridas do paciente com filtro por status e paginação.
+    """
+    usuario: Usuario = request.user
+    if usuario.tipo_usuario != TipoUsuario.PACIENTE:
+        messages.error(request, "Apenas pacientes podem acessar suas corridas.")
+        return redirect("rodas:dashboard")
+
+    paciente = usuario.perfil_paciente
+    qs = Corrida.objects.filter(paciente=paciente).order_by("-data_hora_agendada")
+
+    status = request.GET.get("status")
+    if status in dict(CorridaStatus.choices):
+        qs = qs.filter(status=status)
+
+    paginator = Paginator(qs, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "title": "Minhas Corridas - Esperança Sobre Rodas",
+        "page_obj": page_obj,
+        "current_status": status or "",
+        "status_choices": CorridaStatus.choices,
+    }
+    return render(request, "rodas/paciente/corridas_list.html", context)
+
+
+@login_required
+def corridas_motorista_list_view(request):
+    """
+    Lista de corridas do motorista com filtro por status e paginação.
+    """
+    usuario: Usuario = request.user
+    if usuario.tipo_usuario != TipoUsuario.MOTORISTA:
+        messages.error(request, "Apenas motoristas podem acessar suas corridas.")
+        return redirect("rodas:dashboard")
+
+    motorista = usuario.perfil_motorista
+    qs = Corrida.objects.filter(motorista=motorista).order_by("-data_hora_agendada")
+
+    status = request.GET.get("status")
+    if status in dict(CorridaStatus.choices):
+        qs = qs.filter(status=status)
+
+    paginator = Paginator(qs, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "title": "Minhas Corridas - Motorista",
+        "page_obj": page_obj,
+        "current_status": status or "",
+        "status_choices": CorridaStatus.choices,
+    }
+    return render(request, "rodas/motorista/corridas_list.html", context)

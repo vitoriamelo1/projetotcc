@@ -43,6 +43,13 @@ urlpatterns = [
     path("dashboard/", views.dashboard_view, name="dashboard"),
     path("profile/", views.profile_view, name="profile"),
     path("solicita-corrida/", views.solicitar_corrida_view, name="solicita_corrida"),
+    # Listagens de corridas
+    path("corridas/", views.corridas_paciente_list_view, name="corridas_paciente"),
+    path(
+        "motorista/corridas/",
+        views.corridas_motorista_list_view,
+        name="corridas_motorista",
+    ),
     # Corridas
     path(
         "corrida/<int:corrida_id>/",
