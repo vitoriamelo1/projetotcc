@@ -10,6 +10,8 @@ staticfiles
 static/css/style.css
 .idea
 
+.kiro
+
 # Virtual environments
 .venv
 

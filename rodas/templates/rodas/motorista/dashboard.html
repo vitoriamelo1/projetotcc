@@ -248,29 +248,25 @@
 
 <script>
     function toggleOnlineStatus() {
-        const isOnline = {{ user.perfil_motorista.online| yesno: "true,false"
-    }};
-
-    fetch('/api/motorista/toggle-status/', {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ online: !isOnline })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            } else {
-                alert('Erro ao alterar status: ' + data.message);
-            }
+        fetch('/api/motorista/toggle-status/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json',
+            },
         })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Erro ao alterar status. Tente novamente.');
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Erro ao alterar status: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Erro ao alterar status. Tente novamente.');
+            });
     }
 </script>
 

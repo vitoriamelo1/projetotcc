@@ -43,4 +43,26 @@ urlpatterns = [
     path("dashboard/", views.dashboard_view, name="dashboard"),
     path("profile/", views.profile_view, name="profile"),
     path("solicita-corrida/", views.solicitar_corrida_view, name="solicita_corrida"),
+    # Corridas
+    path(
+        "corrida/<int:corrida_id>/",
+        views.corrida_detalhes_view,
+        name="corrida_detalhes",
+    ),
+    # API endpoints
+    path(
+        "api/corridas/<int:corrida_id>/aceitar/",
+        views.aceitar_corrida_view,
+        name="aceitar_corrida",
+    ),
+    path(
+        "api/motorista/toggle-status/",
+        views.toggle_motorista_status_view,
+        name="toggle_motorista_status",
+    ),
+    path(
+        "api/corridas/<int:corrida_id>/status/",
+        views.atualizar_status_corrida_view,
+        name="atualizar_status_corrida",
+    ),
 ]

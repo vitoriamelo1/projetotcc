@@ -103,11 +103,11 @@
                         Aceitar corrida
                     </button>
 
-                    <button onclick="viewRideDetails({{ corrida.id }})"
-                        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+                    <a href="{% url 'rodas:corrida_detalhes' corrida.id %}"
+                        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors text-center">
                         <i class="fas fa-info-circle mr-2"></i>
                         Ver detalhes
-                    </button>
+                    </a>
                 </div>
             </div>
             {% endfor %}
@@ -133,8 +133,6 @@
 <script>
     function acceptRide(rideId) {
         if (confirm('Tem certeza que deseja aceitar esta corrida?')) {
-            // Aqui você implementaria a lógica para aceitar a corrida
-            // Por exemplo, fazer uma requisição AJAX para o backend
             fetch(`/api/corridas/${rideId}/aceitar/`, {
                 method: 'POST',
                 headers: {
@@ -146,7 +144,11 @@
                 .then(data => {
                     if (data.success) {
                         alert('Corrida aceita com sucesso!');
-                        location.reload();
+                        if (data.redirect_url) {
+                            window.location.href = data.redirect_url;
+                        } else {
+                            location.reload();
+                        }
                     } else {
                         alert('Erro ao aceitar corrida: ' + data.message);
                     }
@@ -156,11 +158,6 @@
                     alert('Erro ao aceitar corrida. Tente novamente.');
                 });
         }
-    }
-
-    function viewRideDetails(rideId) {
-        // Implementar modal ou redirecionamento para detalhes da corrida
-        console.log('Ver detalhes da corrida:', rideId);
     }
 
     function refreshPendingRides() {

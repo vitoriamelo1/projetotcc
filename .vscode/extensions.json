@@ -1,6 +1,7 @@
 {
     "recommendations": [
-        "ms-python.black-formatter",
-        "donjayamanne.python-environment-manager"
+        "donjayamanne.python-environment-manager",
+        "ms-python.python",
+        "charliermarsh.ruff"
     ]
 }

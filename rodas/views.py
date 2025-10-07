@@ -2,11 +2,22 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordResetForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+import json
 
 from .forms import PacienteRegisterForm, MotoristaRegisterForm, SolicitaCorridaform
-from .models import Usuario, Paciente, TipoUsuario, Corrida, CorridaStatus, Motorista
+from .models import (
+    Usuario,
+    Paciente,
+    TipoUsuario,
+    Corrida,
+    CorridaStatus,
+    Motorista,
+    Notificacao,
+)
 
 
 # Create your views here.
@@ -341,7 +352,7 @@ def solicitar_corrida_view(request):
                 form = SolicitaCorridaform()
                 context["form"] = form
 
-            except Exception as e:
+            except Exception:
                 messages.error(request, "Erro ao solicitar corrida. Tente novamente.")
                 context["form"] = form
         else:
@@ -370,3 +381,233 @@ def profile_view(request):
         "user": request.user,
     }
     return render(request, "rodas/profile.html", context)
+
+
+@login_required
+def corrida_detalhes_view(request, corrida_id):
+    """
+    View para visualizar detalhes de uma corrida específica.
+    """
+    corrida = get_object_or_404(Corrida, id=corrida_id)
+    user = request.user
+
+    # Verificar se o usuário tem permissão para ver esta corrida
+    if user.tipo_usuario == TipoUsuario.MOTORISTA:
+        # Motoristas podem ver corridas pendentes ou suas próprias corridas
+        if (
+            corrida.status != CorridaStatus.PENDENTE
+            and corrida.motorista != user.perfil_motorista
+        ):
+            messages.error(request, "Você não tem permissão para ver esta corrida.")
+            return redirect("rodas:dashboard")
+    elif user.tipo_usuario == TipoUsuario.PACIENTE:
+        # Pacientes só podem ver suas próprias corridas
+        if corrida.paciente != user.perfil_paciente:
+            messages.error(request, "Você não tem permissão para ver esta corrida.")
+            return redirect("rodas:dashboard")
+    else:
+        messages.error(request, "Acesso negado.")
+        return redirect("rodas:dashboard")
+
+    context = {
+        "title": f"Corrida #{corrida.id} - Esperança Sobre Rodas",
+        "corrida": corrida,
+        "user": user,
+    }
+
+    if user.tipo_usuario == TipoUsuario.MOTORISTA:
+        return render(request, "rodas/motorista/corrida_detalhes.html", context)
+    else:
+        return render(request, "rodas/paciente/corrida_detalhes.html", context)
+
+
+@login_required
+@require_http_methods(["POST"])
+def aceitar_corrida_view(request, corrida_id):
+    """
+    API endpoint para motorista aceitar uma corrida.
+    """
+    if request.user.tipo_usuario != TipoUsuario.MOTORISTA:
+        return JsonResponse(
+            {"success": False, "message": "Apenas motoristas podem aceitar corridas."}
+        )
+
+    try:
+        motorista = request.user.perfil_motorista
+
+        # Verificar se o motorista está aprovado e online
+        if motorista.status_aprovacao != "aprovado":
+            return JsonResponse(
+                {"success": False, "message": "Seu cadastro ainda não foi aprovado."}
+            )
+
+        if not motorista.online:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "Você precisa estar online para aceitar corridas.",
+                }
+            )
+
+        corrida = get_object_or_404(Corrida, id=corrida_id)
+
+        # Verificar se a corrida pode ser aceita
+        if not corrida.pode_ser_aceita:
+            return JsonResponse(
+                {"success": False, "message": "Esta corrida não pode mais ser aceita."}
+            )
+
+        # Aceitar a corrida
+        corrida.motorista = motorista
+        corrida.status = CorridaStatus.ACEITA
+        corrida.data_hora_aceite = timezone.now()
+        corrida.save()
+
+        # Criar notificação para o paciente
+        Notificacao.objects.create(
+            usuario=corrida.paciente.usuario,
+            tipo="corrida_aceita",
+            titulo="Corrida aceita!",
+            mensagem=f"O motorista {motorista.usuario.get_short_name()} aceitou sua corrida.",
+            corrida=corrida,
+        )
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Corrida aceita com sucesso!",
+                "redirect_url": f"/corrida/{corrida.id}/",
+            }
+        )
+
+    except Exception:
+        return JsonResponse(
+            {"success": False, "message": "Erro interno. Tente novamente."}
+        )
+
+
+@login_required
+@require_http_methods(["POST"])
+def toggle_motorista_status_view(request):
+    """
+    API endpoint para alternar status online/offline do motorista.
+    """
+    if request.user.tipo_usuario != TipoUsuario.MOTORISTA:
+        return JsonResponse(
+            {"success": False, "message": "Apenas motoristas podem alterar status."}
+        )
+
+    try:
+        motorista = request.user.perfil_motorista
+
+        # Verificar se o motorista está aprovado
+        if motorista.status_aprovacao != "aprovado":
+            return JsonResponse(
+                {"success": False, "message": "Seu cadastro ainda não foi aprovado."}
+            )
+
+        # Alternar status
+        motorista.online = not motorista.online
+        motorista.save()
+
+        status_text = "online" if motorista.online else "offline"
+        return JsonResponse(
+            {
+                "success": True,
+                "message": f"Status alterado para {status_text}.",
+                "online": motorista.online,
+            }
+        )
+
+    except Exception:
+        return JsonResponse(
+            {"success": False, "message": "Erro interno. Tente novamente."}
+        )
+
+
+@login_required
+@require_http_methods(["POST"])
+def atualizar_status_corrida_view(request, corrida_id):
+    """
+    API endpoint para atualizar status da corrida (iniciar, marcar chegada, finalizar).
+    """
+    if request.user.tipo_usuario != TipoUsuario.MOTORISTA:
+        return JsonResponse(
+            {
+                "success": False,
+                "message": "Apenas motoristas podem atualizar status da corrida.",
+            }
+        )
+
+    try:
+        data = json.loads(request.body)
+        novo_status = data.get("status")
+
+        corrida = get_object_or_404(Corrida, id=corrida_id)
+        motorista = request.user.perfil_motorista
+
+        # Verificar se é o motorista da corrida
+        if corrida.motorista != motorista:
+            return JsonResponse(
+                {"success": False, "message": "Você não é o motorista desta corrida."}
+            )
+
+        # Validar transições de status
+        if novo_status == CorridaStatus.EM_ANDAMENTO and corrida.pode_ser_iniciada:
+            corrida.status = CorridaStatus.EM_ANDAMENTO
+            corrida.data_hora_inicio = timezone.now()
+            mensagem_notificacao = "Sua corrida foi iniciada!"
+
+        elif (
+            novo_status == CorridaStatus.MOTORISTA_CHEGOU
+            and corrida.pode_marcar_chegada
+        ):
+            corrida.status = CorridaStatus.MOTORISTA_CHEGOU
+            corrida.data_hora_chegada = timezone.now()
+            mensagem_notificacao = "O motorista chegou ao local!"
+
+        elif novo_status == CorridaStatus.CONCLUIDA and corrida.pode_ser_finalizada:
+            corrida.status = CorridaStatus.CONCLUIDA
+            corrida.data_hora_finalizacao = timezone.now()
+            # Atualizar estatísticas do motorista
+            motorista.total_corridas += 1
+            motorista.save()
+            mensagem_notificacao = "Sua corrida foi concluída!"
+
+        else:
+            return JsonResponse(
+                {"success": False, "message": "Transição de status inválida."}
+            )
+
+        corrida.save()
+
+        # Criar notificação para o paciente
+        Notificacao.objects.create(
+            usuario=corrida.paciente.usuario,
+            tipo=(
+                "corrida_iniciada"
+                if novo_status == CorridaStatus.EM_ANDAMENTO
+                else (
+                    "motorista_chegou"
+                    if novo_status == CorridaStatus.MOTORISTA_CHEGOU
+                    else "corrida_finalizada"
+                )
+            ),
+            titulo=mensagem_notificacao,
+            mensagem=f"Status da corrida atualizado para: {corrida.get_status_display()}",
+            corrida=corrida,
+        )
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Status atualizado com sucesso!",
+                "new_status": corrida.status,
+                "new_status_display": corrida.get_status_display(),
+            }
+        )
+
+    except Exception:
+        return JsonResponse(
+            {"success": False, "message": "Erro interno. Tente novamente."}
+        )

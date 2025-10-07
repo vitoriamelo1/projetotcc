@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
-from .models import Usuario, Paciente, Motorista
+from .models import Usuario
 
 
 class PacienteRegisterForm(forms.Form):

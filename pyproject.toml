@@ -13,3 +13,8 @@ dependencies = [
     "redis>=6.4.0",
     "whitenoise>=6.9.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.13.3",
+]
