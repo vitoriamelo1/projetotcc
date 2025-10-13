@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 import json
 from django.core.paginator import Paginator
+from django.conf import settings
 
 from .forms import PacienteRegisterForm, MotoristaRegisterForm, SolicitaCorridaform
 from .models import (
@@ -261,6 +262,7 @@ def dashboard_view(request):
                 "total_corridas": total_corridas,
                 "corridas_concluidas": corridas_concluidas,
                 "corridas_pendentes": corridas_pendentes,
+                "google_maps_api_key": settings.GOOGLE_MAPS_API_KEY,
             },
         )
 
