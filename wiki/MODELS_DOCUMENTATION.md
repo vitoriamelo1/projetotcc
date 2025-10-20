@@ -7,6 +7,7 @@ Este sistema implementa todos os models necessários para o funcionamento comple
 ## 🏗️ Estrutura dos Models
 
 ### 1. **Usuario** (Modelo de Usuário Customizado)
+
 - **Herança**: `AbstractUser` do Django
 - **Tipos de usuário**: Paciente, Motorista, Administrador
 - **Campos principais**:
@@ -19,6 +20,7 @@ Este sistema implementa todos os models necessários para o funcionamento comple
   - `ativo`: Status do usuário
 
 ### 2. **Paciente** (Perfil do Paciente)
+
 - **Relacionamento**: OneToOne com Usuario
 - **Campos específicos**:
   - `responsavel_nome`, `responsavel_cpf`, `responsavel_telefone`: Dados do responsável
@@ -29,7 +31,8 @@ Este sistema implementa todos os models necessários para o funcionamento comple
   - `data_aceite_termos`: Data do aceite
 
 ### 3. **Motorista** (Perfil do Motorista Voluntário)
-- **Relacionamento**: OneToOne com Usuario
+
+- **Relacionamento**: OneToOne com Usuario (`related_name="perfil_motorista"`)
 - **Status**: Pendente, Aprovado, Rejeitado, Suspenso
 - **Campos específicos**:
   - `marca_veiculo`, `modelo_veiculo`, `cor_veiculo`: Dados do veículo
@@ -38,14 +41,18 @@ Este sistema implementa todos os models necessários para o funcionamento comple
   - `status_aprovacao`: Status da aprovação do cadastro
   - `online`: Status online/offline
   - `aceite_termos_voluntariado`: Aceite dos termos
+  - `data_aceite_termos`: Data do aceite
   - `avaliacao_media`: Avaliação média recebida
   - `total_corridas`: Total de corridas realizadas
+  - `data_aprovacao`: Data em que o cadastro foi aprovado
+  - `observacoes_admin`: Observações internas da administração
 
 ### 4. **Corrida** (Modelo Principal)
-- **Status**: Pendente, Aceita, Em Andamento, Motorista Chegou, Concluída, Cancelada
-- **Relacionamentos**: 
-  - ForeignKey para Paciente (obrigatório)
-  - ForeignKey para Motorista (opcional)
+
+- **Status**: Pendente, Aceita, Em Andamento, Motorista Chegou, Concluída, Cancelada (definidos em `CorridaStatus`)
+- **Relacionamentos**:
+  - ForeignKey para Paciente (`related_name="corridas"`)
+  - ForeignKey para Motorista (`related_name="corridas"`, opcional)
 - **Campos principais**:
   - `endereco_origem`, `endereco_destino`: Endereços
   - `latitude_origem`, `longitude_origem`: Coordenadas origem
@@ -57,24 +64,29 @@ Este sistema implementa todos os models necessários para o funcionamento comple
   - `necessita_cadeira_rodas`: Se precisa de cadeira de rodas
   - `observacoes`: Observações da corrida
   - `motivo_cancelamento`: Motivo se cancelada
+  - `data_cancelamento`: Data em que foi cancelada
+  - `cancelada_por`: Usuário que efetuou o cancelamento
 
 ### 5. **Avaliacao** (Sistema de Avaliações)
+
 - **Tipos**: Paciente avalia Motorista, Motorista avalia Paciente
-- **Relacionamentos**: 
-  - ForeignKey para Corrida
-  - ForeignKey para Usuario (avaliador)
-  - ForeignKey para Usuario (avaliado)
+- **Relacionamentos**:
+  - ForeignKey para Corrida (`related_name="avaliacoes"`)
+  - ForeignKey para Usuario (avaliador, `related_name="avaliacoes_feitas"`)
+  - ForeignKey para Usuario (avaliado, `related_name="avaliacoes_recebidas"`)
 - **Campos**:
   - `tipo_avaliacao`: Tipo da avaliação
   - `nota`: Nota de 1 a 5 estrelas
   - `comentario`: Comentário opcional
   - `data_avaliacao`: Data da avaliação
+- **Restrições**: `unique_together = ["corrida", "avaliador"]` (Impede múltiplas avaliações do mesmo tipo na mesma corrida)
 
 ### 6. **Notificacao** (Sistema de Notificações)
+
 - **Tipos**: Nova corrida, Corrida aceita, Motorista chegou, etc.
-- **Relacionamentos**: 
-  - ForeignKey para Usuario
-  - ForeignKey para Corrida (opcional)
+- **Relacionamentos**:
+  - ForeignKey para Usuario (`related_name="notificacoes"`)
+  - ForeignKey para Corrida (`related_name="notificacoes"`, opcional)
 - **Campos**:
   - `tipo`: Tipo da notificação
   - `titulo`: Título da notificação
@@ -83,6 +95,7 @@ Este sistema implementa todos os models necessários para o funcionamento comple
   - `data_leitura`: Data da leitura
 
 ### 7. **Configuracao** (Configurações do Sistema)
+
 - **Campos**:
   - `chave`: Chave única da configuração
   - `valor`: Valor da configuração
@@ -91,7 +104,9 @@ Este sistema implementa todos os models necessários para o funcionamento comple
 ## 🔄 Fluxo de Navegação Implementado
 
 ### **Login/Cadastro → Seleção de Perfil**
+
 1. **Cadastro Paciente**:
+
    - Dados do responsável (nome, CPF, telefone)
    - Data de nascimento
    - Necessidades (cadeira de rodas, imunossupressão)
@@ -105,7 +120,9 @@ Este sistema implementa todos os models necessários para o funcionamento comple
    - Status de aprovação (pendente → aprovado)
 
 ### **Paciente - Fluxo de Corrida**
+
 1. **Agendar Corrida**:
+
    - Endereço de origem e destino (integração com Maps)
    - Data e hora
    - Número de passageiros
@@ -118,12 +135,15 @@ Este sistema implementa todos os models necessários para o funcionamento comple
    - Opções: Ver detalhes, Cancelar
 
 ### **Motorista - Fluxo de Corrida**
+
 1. **Corridas Disponíveis**:
+
    - Filtros (hoje, amanhã, hospital)
    - Ver detalhes
    - Aceitar corrida
 
 2. **Detalhe da Corrida**:
+
    - Informações completas
    - Contato com responsável
    - Ações: Iniciar → Cheguei → Finalizar
@@ -135,6 +155,7 @@ Este sistema implementa todos os models necessários para o funcionamento comple
 ## 🔧 Funcionalidades Implementadas
 
 ### **Validações**:
+
 - ✅ CPF formatado e único
 - ✅ Telefone formatado
 - ✅ CEP formatado
@@ -142,18 +163,21 @@ Este sistema implementa todos os models necessários para o funcionamento comple
 - ✅ Validação de campos obrigatórios
 
 ### **Relacionamentos**:
+
 - ✅ Usuario → Paciente/Motorista (OneToOne)
 - ✅ Corrida → Paciente/Motorista (ForeignKey)
 - ✅ Avaliacao → Usuario/Corrida (ForeignKey)
 - ✅ Notificacao → Usuario/Corrida (ForeignKey)
 
 ### **Estados e Fluxos**:
+
 - ✅ Status de corrida com transições
 - ✅ Status de aprovação de motorista
 - ✅ Sistema de notificações
 - ✅ Sistema de avaliações
 
 ### **Métodos Utilitários**:
+
 - ✅ Properties para validação de estados
 - ✅ Métodos para marcar notificações como lidas
 - ✅ Cálculo de avaliação média
