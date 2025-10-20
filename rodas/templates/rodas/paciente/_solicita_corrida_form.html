@@ -49,7 +49,7 @@
       {% csrf_token %}
       <div id="ride-form-messages"></div>
 
-            <!-- Endereços -->
+      <!-- Endereços -->
       <div class="space-y-4">
         <div class="relative">
           <label
@@ -71,7 +71,9 @@
               class="absolute inset-y-0 right-0 pr-3 flex items-center z-10"
               title="Usar localização atual"
             >
-              <i class="fas fa-location-arrow text-blue-500 hover:text-blue-700 cursor-pointer"></i>
+              <i
+                class="fas fa-location-arrow text-blue-500 hover:text-blue-700 cursor-pointer"
+              ></i>
             </button>
             <input
               id="ride_endereco_origem"
@@ -134,7 +136,10 @@
               class="flex items-center text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200 px-3 py-1 rounded-md hover:bg-blue-50"
             >
               <span id="toggle-map-text">Mostrar mapa</span>
-              <i id="toggle-map-icon" class="fas fa-chevron-down ml-2 transition-transform duration-200"></i>
+              <i
+                id="toggle-map-icon"
+                class="fas fa-chevron-down ml-2 transition-transform duration-200"
+              ></i>
             </button>
           </div>
           <div id="map-container" class="hidden">
@@ -142,11 +147,16 @@
               <div
                 id="map"
                 class="w-full h-64 bg-gray-200 rounded-lg border border-gray-300 shadow-inner"
-                style="min-height: 256px;"
+                style="min-height: 256px"
               ></div>
-              <div id="map-loading" class="absolute inset-0 bg-gray-100 bg-opacity-75 items-center justify-center rounded-lg hidden">
+              <div
+                id="map-loading"
+                class="absolute inset-0 bg-gray-100 bg-opacity-75 items-center justify-center rounded-lg hidden"
+              >
                 <div class="text-center">
-                  <i class="fas fa-spinner fa-spin text-2xl text-gray-400 mb-2"></i>
+                  <i
+                    class="fas fa-spinner fa-spin text-2xl text-gray-400 mb-2"
+                  ></i>
                   <p class="text-sm text-gray-600">Carregando mapa...</p>
                 </div>
               </div>
@@ -154,7 +164,10 @@
             <div class="mt-3 flex items-start space-x-4 text-xs text-gray-500">
               <div class="flex items-center">
                 <i class="fas fa-info-circle mr-1 text-blue-400"></i>
-                <span>Os marcadores aparecerão conforme você digita os endereços</span>
+                <span
+                  >Os marcadores aparecerão conforme você digita os
+                  endereços</span
+                >
               </div>
             </div>
             <div class="mt-2 flex items-center space-x-4 text-xs">
@@ -169,7 +182,8 @@
             </div>
           </div>
         </div>
-      </div>      <!-- Data e Hora -->
+      </div>
+      <!-- Data e Hora -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label
@@ -350,12 +364,18 @@
 
 <!-- Google Maps API -->
 {% if google_maps_api_key %}
-<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initGoogleMaps"></script>
+<script
+  async
+  defer
+  src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initGoogleMaps"
+></script>
 {% else %}
 <!-- Google Maps API key not configured -->
 <script>
-  console.warn('Google Maps API key not configured. Map functionality will be disabled.');
-  window.initGoogleMaps = function() {
+  console.warn(
+    "Google Maps API key not configured. Map functionality will be disabled."
+  );
+  window.initGoogleMaps = function () {
     // Empty callback for when API key is not available
   };
 </script>
@@ -375,11 +395,11 @@
   // Inicializar Google Maps
   function initGoogleMaps() {
     // Inicializar mapa (inicialmente oculto)
-    const mapElement = document.getElementById('map');
+    const mapElement = document.getElementById("map");
     if (mapElement) {
       map = new google.maps.Map(mapElement, {
         center: { lat: -23.5505, lng: -46.6333 }, // São Paulo como centro padrão
-        zoom: 12
+        zoom: 12,
       });
 
       placesService = new google.maps.places.PlacesService(map);
@@ -387,22 +407,22 @@
       directionsRenderer = new google.maps.DirectionsRenderer({
         suppressMarkers: false,
         polylineOptions: {
-          strokeColor: '#10B981',
-          strokeWeight: 4
-        }
+          strokeColor: "#10B981",
+          strokeWeight: 4,
+        },
       });
       directionsRenderer.setMap(map);
     }
 
     // Configurar autocomplete para origem
-    const originInput = document.getElementById('ride_endereco_origem');
+    const originInput = document.getElementById("ride_endereco_origem");
     if (originInput) {
       autocompleteOrigin = new google.maps.places.Autocomplete(originInput, {
-        componentRestrictions: { country: 'br' },
-        fields: ['place_id', 'geometry', 'name', 'formatted_address']
+        componentRestrictions: { country: "br" },
+        fields: ["place_id", "geometry", "name", "formatted_address"],
       });
 
-      autocompleteOrigin.addListener('place_changed', function() {
+      autocompleteOrigin.addListener("place_changed", function () {
         const place = autocompleteOrigin.getPlace();
         if (place.geometry) {
           updateOriginMarker(place);
@@ -412,14 +432,17 @@
     }
 
     // Configurar autocomplete para destino
-    const destinationInput = document.getElementById('ride_endereco_destino');
+    const destinationInput = document.getElementById("ride_endereco_destino");
     if (destinationInput) {
-      autocompleteDestination = new google.maps.places.Autocomplete(destinationInput, {
-        componentRestrictions: { country: 'br' },
-        fields: ['place_id', 'geometry', 'name', 'formatted_address']
-      });
+      autocompleteDestination = new google.maps.places.Autocomplete(
+        destinationInput,
+        {
+          componentRestrictions: { country: "br" },
+          fields: ["place_id", "geometry", "name", "formatted_address"],
+        }
+      );
 
-      autocompleteDestination.addListener('place_changed', function() {
+      autocompleteDestination.addListener("place_changed", function () {
         const place = autocompleteDestination.getPlace();
         if (place.geometry) {
           updateDestinationMarker(place);
@@ -434,14 +457,14 @@
     if (originMarker) {
       originMarker.setMap(null);
     }
-    
+
     originMarker = new google.maps.Marker({
       position: place.geometry.location,
       map: map,
-      title: 'Origem',
+      title: "Origem",
       icon: {
-        url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
-      }
+        url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+      },
     });
 
     // Centralizar mapa se necessário
@@ -456,14 +479,14 @@
     if (destinationMarker) {
       destinationMarker.setMap(null);
     }
-    
+
     destinationMarker = new google.maps.Marker({
       position: place.geometry.location,
       map: map,
-      title: 'Destino',
+      title: "Destino",
       icon: {
-        url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
-      }
+        url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+      },
     });
 
     // Centralizar mapa se necessário
@@ -475,17 +498,22 @@
 
   // Atualizar rota entre origem e destino
   function updateRoute() {
-    if (originMarker && destinationMarker && directionsService && directionsRenderer) {
+    if (
+      originMarker &&
+      destinationMarker &&
+      directionsService &&
+      directionsRenderer
+    ) {
       const request = {
         origin: originMarker.getPosition(),
         destination: destinationMarker.getPosition(),
-        travelMode: google.maps.TravelMode.DRIVING
+        travelMode: google.maps.TravelMode.DRIVING,
       };
 
-      directionsService.route(request, function(result, status) {
-        if (status === 'OK') {
+      directionsService.route(request, function (result, status) {
+        if (status === "OK") {
           directionsRenderer.setDirections(result);
-          
+
           // Ajustar zoom para mostrar toda a rota
           const bounds = new google.maps.LatLngBounds();
           bounds.extend(originMarker.getPosition());
@@ -498,87 +526,91 @@
 
   // Obter localização atual
   function getCurrentLocation() {
-    const button = document.getElementById('get-current-location-btn');
-    const icon = button.querySelector('i');
-    
+    const button = document.getElementById("get-current-location-btn");
+    const icon = button.querySelector("i");
+
     if (!navigator.geolocation) {
-      alert('Geolocalização não é suportada por este navegador.');
+      alert("Geolocalização não é suportada por este navegador.");
       return;
     }
 
     // Mostrar loading
-    icon.className = 'fas fa-spinner fa-spin text-blue-500';
+    icon.className = "fas fa-spinner fa-spin text-blue-500";
     button.disabled = true;
 
     navigator.geolocation.getCurrentPosition(
-      function(position) {
+      function (position) {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
-        
+
         // Usar o serviço de geocoding reverso do Google
         const geocoder = new google.maps.Geocoder();
         geocoder.geocode(
           { location: { lat: lat, lng: lng } },
-          function(results, status) {
-            if (status === 'OK' && results[0]) {
-              const originInput = document.getElementById('ride_endereco_origem');
+          function (results, status) {
+            if (status === "OK" && results[0]) {
+              const originInput = document.getElementById(
+                "ride_endereco_origem"
+              );
               originInput.value = results[0].formatted_address;
-              
+
               // Simular evento de mudança para atualizar o mapa
               const place = {
                 geometry: { location: new google.maps.LatLng(lat, lng) },
-                formatted_address: results[0].formatted_address
+                formatted_address: results[0].formatted_address,
               };
               updateOriginMarker(place);
               updateRoute();
-              
+
               // Mostrar o mapa automaticamente
               showMap();
             } else {
-              alert('Não foi possível obter o endereço da sua localização atual.');
+              alert(
+                "Não foi possível obter o endereço da sua localização atual."
+              );
             }
-            
+
             // Restaurar botão
-            icon.className = 'fas fa-location-arrow text-blue-500';
+            icon.className = "fas fa-location-arrow text-blue-500";
             button.disabled = false;
           }
         );
       },
-      function(error) {
-        let errorMessage = 'Erro ao obter localização: ';
+      function (error) {
+        let errorMessage = "Erro ao obter localização: ";
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage += 'Permissão negada pelo usuário.';
+            errorMessage += "Permissão negada pelo usuário.";
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage += 'Localização não disponível.';
+            errorMessage += "Localização não disponível.";
             break;
           case error.TIMEOUT:
-            errorMessage += 'Tempo limite excedido.';
+            errorMessage += "Tempo limite excedido.";
             break;
           default:
-            errorMessage += 'Erro desconhecido.';
+            errorMessage += "Erro desconhecido.";
             break;
         }
         alert(errorMessage);
-        
+
         // Restaurar botão
-        icon.className = 'fas fa-location-arrow text-blue-500';
+        icon.className = "fas fa-location-arrow text-blue-500";
         button.disabled = false;
       },
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 60000
+        maximumAge: 60000,
       }
     );
   }
 
   // Mostrar/ocultar mapa
   function toggleMap() {
-    const container = document.getElementById('map-container');
-    
-    if (container.classList.contains('hidden')) {
+    const container = document.getElementById("map-container");
+
+    if (container.classList.contains("hidden")) {
       showMap();
     } else {
       hideMap();
@@ -586,40 +618,41 @@
   }
 
   function showMap() {
-    const container = document.getElementById('map-container');
-    const text = document.getElementById('toggle-map-text');
-    const icon = document.getElementById('toggle-map-icon');
-    const loading = document.getElementById('map-loading');
-    
-    container.classList.remove('hidden');
-    text.textContent = 'Ocultar mapa';
-    icon.className = 'fas fa-chevron-up ml-2 transition-transform duration-200';
-    
+    const container = document.getElementById("map-container");
+    const text = document.getElementById("toggle-map-text");
+    const icon = document.getElementById("toggle-map-icon");
+    const loading = document.getElementById("map-loading");
+
+    container.classList.remove("hidden");
+    text.textContent = "Ocultar mapa";
+    icon.className = "fas fa-chevron-up ml-2 transition-transform duration-200";
+
     // Mostrar loading se o mapa ainda não foi inicializado
-    if (!map && typeof google !== 'undefined') {
-      loading.classList.remove('hidden');
-      loading.classList.add('flex');
+    if (!map && typeof google !== "undefined") {
+      loading.classList.remove("hidden");
+      loading.classList.add("flex");
     }
-    
+
     // Redimensionar mapa após mostrar
     setTimeout(() => {
       if (map) {
-        loading.classList.add('hidden');
-        loading.classList.remove('flex');
-        google.maps.event.trigger(map, 'resize');
+        loading.classList.add("hidden");
+        loading.classList.remove("flex");
+        google.maps.event.trigger(map, "resize");
         updateRoute(); // Reajustar rota se houver marcadores
       }
     }, 100);
   }
 
   function hideMap() {
-    const container = document.getElementById('map-container');
-    const text = document.getElementById('toggle-map-text');
-    const icon = document.getElementById('toggle-map-icon');
-    
-    container.classList.add('hidden');
-    text.textContent = 'Mostrar mapa';
-    icon.className = 'fas fa-chevron-down ml-2 transition-transform duration-200';
+    const container = document.getElementById("map-container");
+    const text = document.getElementById("toggle-map-text");
+    const icon = document.getElementById("toggle-map-icon");
+
+    container.classList.add("hidden");
+    text.textContent = "Mostrar mapa";
+    icon.className =
+      "fas fa-chevron-down ml-2 transition-transform duration-200";
   }
 
   // Utilitário: pegar token CSRF do template
@@ -810,30 +843,36 @@
     }
 
     // Event listeners para Google Maps
-    const getCurrentLocationBtn = document.getElementById('get-current-location-btn');
+    const getCurrentLocationBtn = document.getElementById(
+      "get-current-location-btn"
+    );
     if (getCurrentLocationBtn) {
-      getCurrentLocationBtn.addEventListener('click', getCurrentLocation);
+      getCurrentLocationBtn.addEventListener("click", getCurrentLocation);
     }
 
-    const toggleMapBtn = document.getElementById('toggle-map-btn');
+    const toggleMapBtn = document.getElementById("toggle-map-btn");
     if (toggleMapBtn) {
-      toggleMapBtn.addEventListener('click', toggleMap);
+      toggleMapBtn.addEventListener("click", toggleMap);
     }
   });
 
   // Fallback caso o Google Maps não carregue
-  window.addEventListener('load', function() {
-    setTimeout(function() {
-      if (typeof google === 'undefined' || !google.maps) {
-        console.warn('Google Maps API não carregou. Funcionalidade de mapa será limitada.');
+  window.addEventListener("load", function () {
+    setTimeout(function () {
+      if (typeof google === "undefined" || !google.maps) {
+        console.warn(
+          "Google Maps API não carregou. Funcionalidade de mapa será limitada."
+        );
         // Ocultar elementos que dependem do Google Maps
-        const mapSection = document.querySelector('.bg-gray-50.rounded-lg.p-4');
+        const mapSection = document.querySelector(".bg-gray-50.rounded-lg.p-4");
         if (mapSection) {
-          mapSection.style.display = 'none';
+          mapSection.style.display = "none";
         }
-        const getCurrentLocationBtn = document.getElementById('get-current-location-btn');
+        const getCurrentLocationBtn = document.getElementById(
+          "get-current-location-btn"
+        );
         if (getCurrentLocationBtn) {
-          getCurrentLocationBtn.style.display = 'none';
+          getCurrentLocationBtn.style.display = "none";
         }
       }
     }, 3000);
