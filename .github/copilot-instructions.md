@@ -72,3 +72,5 @@ If anything here seems off or is missing (e.g., test commands, admin customizati
 
 - Before any changes, always commit the current state with a descriptive message.
 - Use clear, concise commit messages in the present tense (e.g., "Add user profile model", "Fix ride status transition bug").
+- Use conventional commit prefixes when appropriate (e.g., feat:, fix:, docs:, style:, refactor:, test:, chore:).
+- The commit message must be in Portuguese from Brazil.
