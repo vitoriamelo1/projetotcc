@@ -10,7 +10,7 @@ COPY . .
 
 RUN npm run build:css
 
-FROM ghcr.io/astral-sh/uv:0.9.5-python3.12-bookworm AS runner
+FROM ghcr.io/astral-sh/uv:0.9.5-python3.12-bookworm-slim AS runner
 
 
 ENV PYTHONDONTWRITEBYTECODE 1
