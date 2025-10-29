@@ -12,10 +12,9 @@ RUN npm run build:css
 
 FROM ghcr.io/astral-sh/uv:bookworm-slim AS runner
 
-# Install system dependencies for PostgreSQL
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    gcc \
+# Install minimal system dependencies for PostgreSQL
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONDONTWRITEBYTECODE 1
