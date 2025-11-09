@@ -22,12 +22,7 @@ Espera-se também que o sistema contribua para ampliar a capacidade de atendimen
 A coleta de dados de uso da plataforma poderá oferecer informações relevantes para futuras melhorias no serviço, além de servir de subsídio para o desenvolvimento de políticas públicas voltadas ao suporte de pacientes oncológicos. 
 Finalmente, ao reduzir os índices de abandono terapêutico e as complicações médicas associadas, o projeto poderá ajudar a diminuir os custos indiretos do sistema público de saúde.
 
-OBS: No momento estamos trabalhando no desenvolvimento das telas. 
-Já temos as telas a seguir todas funcionais:
-- Tela de login de ambos os usuarios
-- Cadastro de paciente
-- Cadastro de motorista
-- Agendamento de corrida
+Projeto finalizado
   
 
 
@@ -71,6 +66,7 @@ Nosso modulo Adm está no django, poderá ter acesso com o link e as credenciais
 https://esperanca-sobre-rodas.zerun.com.br/admin/
 email: vitoriamelo@gmail.com
 senha: Jorge1234...
+
 
 
 
