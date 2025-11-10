@@ -1,3 +1,5 @@
+#Projeto já finalizado no ciclo 2, no momento estamos trabalhando no desenvolviemnto da apresentação do TCC, envolvendo slide e documentação.
+
 Projeto TCC esperança sobre rodas
 Ana Julia Dias Barreto - 2212188
 Breno Cappelle de Almeida - 2221510
@@ -72,6 +74,7 @@ Nosso modulo Adm está no django, poderá ter acesso com o link e as credenciais
 https://esperanca-sobre-rodas.zerun.com.br/admin/
 email: vitoriamelo@gmail.com
 senha: Jorge1234...
+
 
 
 
