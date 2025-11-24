@@ -109,16 +109,6 @@ class AbstractUsuario(AbstractBaseUser, PermissionsMixin):
             else self.email.split("@")[0]
         )
 
-    def email_user(
-        self, subject: str, message: str, from_email: str, **kwargs: Any
-    ) -> None:
-        """
-        Envia um email para este usuário
-        """
-        from django.core.mail import send_mail
-
-        send_mail(subject, message, from_email, [self.email], **kwargs)
-
 
 class TipoUsuario(models.TextChoices):
     PACIENTE = "paciente", "Paciente"

@@ -89,12 +89,8 @@ cp .env.example .env
 - **DJANGO_ALLOWED_HOSTS**: Lista de hosts permitidos para acesso à aplicação Django.
 - **DJANGO_SECRET_KEY**: Chave secreta usada pelo Django para segurança.
 - **DJANGO_LOG_LEVEL**: Nível de log do Django (`DEBUG`, `INFO`, etc).
-- **EMAIL_HOST**: Host do servidor de e-mail.
-- **EMAIL_PORT**: Porta do servidor de e-mail.
-- **EMAIL_HOST_USER**: Usuário do servidor de e-mail.
-- **EMAIL_HOST_PASSWORD**: Senha do servidor de e-mail.
-- **DEFAULT_FROM_EMAIL**: E-mail padrão para envio.
 - **REDIS_URL**: URL de conexão com o Redis (usado para cache ou fila de tarefas).
+- **GOOGLE_MAPS_API_KEY**: Chave da API do Google Maps para funcionalidades de geolocalização.
 
 ### 3. Inicie o projeto com Docker Compose
 
