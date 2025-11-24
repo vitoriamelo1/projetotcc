@@ -8,7 +8,6 @@ urlpatterns = [
     # Páginas públicas
     path("", views.index, name="index"),
     path("sobre/", views.sobre, name="sobre"),
-    path("contato/", views.contato, name="contato"),
     # Autenticação
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),

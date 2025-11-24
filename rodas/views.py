@@ -22,9 +22,6 @@ from .models import (
 )
 
 
-# Create your views here.
-
-
 def index(request):
     """
     View para a página inicial do app rodas.
@@ -43,32 +40,6 @@ def sobre(request):
         "title": "Sobre - Esperança Sobre Rodas",
     }
     return render(request, "rodas/sobre.html", context)
-
-
-def contato(request):
-    """
-    View para a página de contato.
-    """
-    if request.method == "POST":
-        # Processar o formulário de contato
-        nome = request.POST.get("nome")
-        email = request.POST.get("email")
-        telefone = request.POST.get("telefone")
-        assunto = request.POST.get("assunto")
-        mensagem = request.POST.get("mensagem")
-
-        # Aqui você pode adicionar a lógica para salvar no banco de dados
-        # ou enviar por email
-
-        messages.success(
-            request,
-            "Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.",
-        )
-
-    context = {
-        "title": "Contato - Esperança Sobre Rodas",
-    }
-    return render(request, "rodas/contato.html", context)
 
 
 def login_view(request):
@@ -125,7 +96,7 @@ def register_view(request):
                 cpf=form.cleaned_data["cpf"],
                 tipo_usuario="paciente",
                 ativo=True,
-                telefone="",  # Pode ser adicionado ao formulário se necessário
+                telefone="",
             )
             Paciente.objects.create(
                 usuario=usuario,
@@ -241,13 +212,10 @@ def dashboard_view(request):
     if usuario.tipo_usuario == TipoUsuario.PACIENTE:
         paciente = Paciente.objects.get(usuario=usuario)
 
-        corridas = (
-            Corrida.objects.filter(paciente=paciente).order_by("-data_hora_agendada")
-            if paciente
-            else []
+        corridas = Corrida.objects.filter(paciente=paciente).order_by(
+            "-data_hora_agendada"
         )
 
-        # Calcular estatísticas
         total_corridas = corridas.count()
         corridas_concluidas = corridas.filter(status=CorridaStatus.CONCLUIDA).count()
         corridas_pendentes = corridas.filter(status=CorridaStatus.PENDENTE).count()
@@ -271,12 +239,10 @@ def dashboard_view(request):
         try:
             motorista = Motorista.objects.get(usuario=usuario)
 
-            # Corridas pendentes (sem motorista atribuído)
             corridas_pendentes = Corrida.objects.filter(
                 status=CorridaStatus.PENDENTE, motorista__isnull=True
             ).order_by("data_hora_agendada")[:10]
 
-            # Corridas do motorista
             corridas_motorista = Corrida.objects.filter(motorista=motorista).order_by(
                 "-data_hora_agendada"
             )
@@ -292,7 +258,6 @@ def dashboard_view(request):
                 },
             )
         except Motorista.DoesNotExist:
-            # Se não tem perfil de motorista, redireciona para criar
             messages.error(request, "Perfil de motorista não encontrado.")
             return redirect("rodas:register_motorista")
 
@@ -348,20 +313,19 @@ def solicitar_corrida_view(request):
 
             corrida.save()
 
-            # Resposta para requisições AJAX
             if is_ajax:
                 return JsonResponse(
                     {
                         "success": True,
                         "message": "Sua corrida foi solicitada com sucesso!",
-                        "corrida_id": corrida.id,
+                        "corrida_id": corrida.pk,
                         "data_hora_agendada": corrida.data_hora_agendada.isoformat(),
                     }
                 )
 
             messages.success(request, "Sua corrida foi solicitada com sucesso!")
             context["success"] = True
-            # Limpar o formulário após sucesso
+
             form = SolicitaCorridaform()
             context["form"] = form
 
@@ -378,7 +342,6 @@ def solicitar_corrida_view(request):
             context["form"] = form
     else:
         if is_ajax:
-            # Retornar erros de validação estruturados
             return JsonResponse(
                 {
                     "success": False,
@@ -413,9 +376,7 @@ def corrida_detalhes_view(request, corrida_id):
     corrida = get_object_or_404(Corrida, id=corrida_id)
     user = request.user
 
-    # Verificar se o usuário tem permissão para ver esta corrida
     if user.tipo_usuario == TipoUsuario.MOTORISTA:
-        # Motoristas podem ver corridas pendentes ou suas próprias corridas
         if (
             corrida.status != CorridaStatus.PENDENTE
             and corrida.motorista != user.perfil_motorista
@@ -423,16 +384,14 @@ def corrida_detalhes_view(request, corrida_id):
             messages.error(request, "Você não tem permissão para ver esta corrida.")
             return redirect("rodas:dashboard")
     elif user.tipo_usuario == TipoUsuario.PACIENTE:
-        # Pacientes só podem ver suas próprias corridas
-        if corrida.paciente != user.perfil_paciente:
-            messages.error(request, "Você não tem permissão para ver esta corrida.")
-            return redirect("rodas:dashboard")
+        messages.error(request, "Você não tem permissão para ver esta corrida.")
+        return redirect("rodas:dashboard")
     else:
         messages.error(request, "Acesso negado.")
         return redirect("rodas:dashboard")
 
     context = {
-        "title": f"Corrida #{corrida.id} - Esperança Sobre Rodas",
+        "title": f"Corrida #{corrida.pk} - Esperança Sobre Rodas",
         "corrida": corrida,
         "user": user,
     }
@@ -457,7 +416,6 @@ def aceitar_corrida_view(request, corrida_id):
     try:
         motorista = request.user.perfil_motorista
 
-        # Verificar se o motorista está aprovado e online
         if motorista.status_aprovacao != "aprovado":
             return JsonResponse(
                 {"success": False, "message": "Seu cadastro ainda não foi aprovado."}
@@ -473,19 +431,16 @@ def aceitar_corrida_view(request, corrida_id):
 
         corrida = get_object_or_404(Corrida, id=corrida_id)
 
-        # Verificar se a corrida pode ser aceita
         if not corrida.pode_ser_aceita:
             return JsonResponse(
                 {"success": False, "message": "Esta corrida não pode mais ser aceita."}
             )
 
-        # Aceitar a corrida
         corrida.motorista = motorista
         corrida.status = CorridaStatus.ACEITA
         corrida.data_hora_aceite = timezone.now()
         corrida.save()
 
-        # Criar notificação para o paciente
         Notificacao.objects.create(
             usuario=corrida.paciente.usuario,
             tipo="corrida_aceita",
@@ -498,7 +453,7 @@ def aceitar_corrida_view(request, corrida_id):
             {
                 "success": True,
                 "message": "Corrida aceita com sucesso!",
-                "redirect_url": f"/corrida/{corrida.id}/",
+                "redirect_url": f"/corrida/{corrida.pk}/",
             }
         )
 
@@ -522,13 +477,11 @@ def toggle_motorista_status_view(request):
     try:
         motorista = request.user.perfil_motorista
 
-        # Verificar se o motorista está aprovado
         if motorista.status_aprovacao != "aprovado":
             return JsonResponse(
                 {"success": False, "message": "Seu cadastro ainda não foi aprovado."}
             )
 
-        # Alternar status
         motorista.online = not motorista.online
         motorista.save()
 
@@ -568,13 +521,11 @@ def atualizar_status_corrida_view(request, corrida_id):
         corrida = get_object_or_404(Corrida, id=corrida_id)
         motorista = request.user.perfil_motorista
 
-        # Verificar se é o motorista da corrida
         if corrida.motorista != motorista:
             return JsonResponse(
                 {"success": False, "message": "Você não é o motorista desta corrida."}
             )
 
-        # Validar transições de status
         if novo_status == CorridaStatus.EM_ANDAMENTO and corrida.pode_ser_iniciada:
             corrida.status = CorridaStatus.EM_ANDAMENTO
             corrida.data_hora_inicio = timezone.now()
@@ -591,7 +542,6 @@ def atualizar_status_corrida_view(request, corrida_id):
         elif novo_status == CorridaStatus.CONCLUIDA and corrida.pode_ser_finalizada:
             corrida.status = CorridaStatus.CONCLUIDA
             corrida.data_hora_finalizacao = timezone.now()
-            # Atualizar estatísticas do motorista
             motorista.total_corridas += 1
             motorista.save()
             mensagem_notificacao = "Sua corrida foi concluída!"
@@ -603,7 +553,6 @@ def atualizar_status_corrida_view(request, corrida_id):
 
         corrida.save()
 
-        # Criar notificação para o paciente
         Notificacao.objects.create(
             usuario=corrida.paciente.usuario,
             tipo=(

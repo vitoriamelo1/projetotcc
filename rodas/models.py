@@ -26,9 +26,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(
-        self, email: str, password: str = None, **extra_fields: Any
-    ) -> "Usuario":
+    def create_user(self, email: str, password: str, **extra_fields: Any) -> "Usuario":
         """
         Cria e salva um usuário regular
         """
@@ -112,7 +110,7 @@ class AbstractUsuario(AbstractBaseUser, PermissionsMixin):
         )
 
     def email_user(
-        self, subject: str, message: str, from_email: str = None, **kwargs: Any
+        self, subject: str, message: str, from_email: str, **kwargs: Any
     ) -> None:
         """
         Envia um email para este usuário
@@ -182,7 +180,7 @@ class Usuario(AbstractUsuario):
         for valor, display in TipoUsuario.choices:
             if valor == self.tipo_usuario:
                 return f"{nome} ({display})"
-        return nome
+        return "~"
 
 
 class Paciente(models.Model):
@@ -461,6 +459,12 @@ class Corrida(models.Model):
     @property
     def pode_ser_finalizada(self) -> bool:
         return self.status == CorridaStatus.MOTORISTA_CHEGOU
+
+    def get_status_display(self) -> str:
+        for valor, display in CorridaStatus.choices:
+            if valor == self.status:
+                return display
+        return "Desconhecido"
 
 
 class Avaliacao(models.Model):

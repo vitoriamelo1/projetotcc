@@ -16,32 +16,64 @@ class UsuarioAdmin(admin.ModelAdmin):
     Admin para o modelo Usuario customizado
     """
 
-    # list_display = ('get_full_name', 'email', 'tipo_usuario', 'ativo', 'data_criacao')
-    # list_filter = ('tipo_usuario', 'ativo', 'is_staff', 'is_superuser', 'data_criacao')
-    # search_fields = ('nome_completo', 'email', 'cpf', 'tipo')
-    # ordering = ('-data_criacao',)
-    #
-    # fieldsets = UserAdmin.fieldsets + (
-    #     ('Informações Adicionais', {
-    #         'fields': ('tipo_usuario', 'telefone', 'cpf', 'data_nascimento',
-    #                    'endereco_completo', 'cidade', 'estado', 'cep', 'ativo')
-    #     }),
-    # )
-    #
-    # add_fieldsets = UserAdmin.add_fieldsets + (
-    #     ('Informações Adicionais', {
-    #         'fields': ('tipo_usuario', 'telefone', 'cpf', 'data_nascimento')
-    #     }),
-    # )
-    pass
+    list_display = (
+        "get_full_name",
+        "email",
+        "tipo_usuario",
+        "ativo",
+        "is_staff",
+        "data_criacao",
+    )
+    list_filter = ("tipo_usuario", "ativo", "is_staff", "is_superuser", "data_criacao")
+    search_fields = ("nome_completo", "email", "cpf", "telefone")
+    ordering = ("-data_criacao",)
+    readonly_fields = ("password", "data_criacao", "data_atualizacao")
+
+    fieldsets = (
+        (
+            "Autenticação",
+            {"fields": ("email", "password", "is_active", "is_staff", "is_superuser")},
+        ),
+        (
+            "Informações Pessoais",
+            {
+                "fields": (
+                    "nome_completo",
+                    "tipo_usuario",
+                    "telefone",
+                    "cpf",
+                    "data_nascimento",
+                )
+            },
+        ),
+        (
+            "Endereço",
+            {
+                "fields": ("endereco_completo", "cidade", "estado", "cep"),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            "Controle do Sistema",
+            {
+                "fields": ("ativo", "data_criacao", "data_atualizacao"),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            "Permissões",
+            {"fields": ("groups", "user_permissions"), "classes": ("collapse",)},
+        ),
+    )
+
+    def get_full_name(self, obj):
+        return obj.get_full_name() or obj.email
+
+    get_full_name.short_description = "Nome Completo"
 
 
 @admin.register(Paciente)
 class PacienteAdmin(admin.ModelAdmin):
-    """
-    Admin para o modelo Paciente
-    """
-
     list_display = (
         "get_nome_usuario",
         "responsavel_nome",
@@ -80,10 +112,6 @@ class PacienteAdmin(admin.ModelAdmin):
 
 @admin.register(Motorista)
 class MotoristaAdmin(admin.ModelAdmin):
-    """
-    Admin para o modelo Motorista
-    """
-
     list_display = (
         "get_nome_usuario",
         "veiculo_completo",
@@ -153,10 +181,6 @@ class MotoristaAdmin(admin.ModelAdmin):
 
 @admin.register(Corrida)
 class CorridaAdmin(admin.ModelAdmin):
-    """
-    Admin para o modelo Corrida
-    """
-
     list_display = (
         "id",
         "get_paciente_nome",
