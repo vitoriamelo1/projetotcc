@@ -167,7 +167,8 @@
                 class="appearance-none relative block size-4 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm disabled:bg-gray-100"
                 {% if form.aceite_termos.value %}checked{% endif %}>
             <label for="aceite_termos" class="ms-2 block text-sm font-medium text-gray-700">Aceito os <a
-                    href="/download/termos_condicoes_paciente.pdf" class="text-blue-500 dark:text-blue-400">termos e
+                    href="/static/download/termos_condicoes_paciente.pdf"
+                    class="text-blue-500 dark:text-blue-400">termos e
                     condições</a></label>
             {% if form.aceite_termos.errors %}
             <div class="text-red-600 text-xs ml-2">{{ form.aceite_termos.errors.0 }}</div>

@@ -183,7 +183,8 @@
                 required {% if form.aceite_termos_voluntariado.value %}checked{% endif %}
                 class="appearance-none relative block size-4 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:bg-gray-100">
             <label for="aceite_termos_voluntariado" class="ms-2 block text-sm font-medium text-gray-700">Aceito os <a
-                    href="/download/termos_condicoes_motorista.pdf" class="text-blue-500 dark:text-blue-400">termos e
+                    href="/static/download/termos_condicoes_motorista.pdf"
+                    class="text-blue-500 dark:text-blue-400">termos e
                     condições de voluntariado</a></label>
             {% if form.aceite_termos_voluntariado.errors %}
             <div class="text-red-600 text-xs ml-2">{{ form.aceite_termos_voluntariado.errors.0 }}</div>
